@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 17:12:02 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/11/21 17:13:43 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/11/21 18:45:02 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ void	print_error_and_exit(char *str)
 
 // Prints system error message, closes the socket (if ssl_data has been passed
 // containing an open socket) and then exits with EXIT_FAILURE status.
+// *** Revisar para que haga los frees pertinentes ***
 void	print_strerror_and_exit(char *msg, t_ssl_data *ssl_data)
 {
 	printf("%s: %s\n", msg, strerror(errno));
@@ -57,7 +58,7 @@ void	parse_options(int opt, t_arguments *args)
 	else if (opt == 's' && args->print_sum == false)
 	{
 		args->print_sum = true;
-		args->input_string = optarg;
+		args->input_str = optarg;
 	}
 }
 

@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 15:25:42 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/11/21 17:12:48 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/11/21 18:36:33 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,9 @@
 typedef struct s_ssl_data
 {
 	t_arguments			args;
+	uint64_t			msg_len;
+	char				*pad_msg;
+	uint64_t			pad_len;	
 	int					fd;
 }	t_ssl_data;
 
@@ -39,6 +42,6 @@ typedef struct s_ssl_data
 ** -.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-
 **                        FUNCTION PROTOTYPES
 */
-uint64_t	padding(t_ssl_data *ssl_data);
+void	md5_sum(t_ssl_data *ssl_data);
 
 #endif
