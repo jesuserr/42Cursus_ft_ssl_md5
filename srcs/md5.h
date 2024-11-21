@@ -1,50 +1,44 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_ssl.h                                           :+:      :+:    :+:   */
+/*   md5.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/19 17:11:34 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/11/21 16:53:06 by jesuserr         ###   ########.fr       */
+/*   Created: 2024/11/21 15:25:42 by jesuserr          #+#    #+#             */
+/*   Updated: 2024/11/21 17:12:48 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_SSL_H
-# define FT_SSL_H
+#ifndef MD5_H
+# define MD5_H
 
 /*
 ** -.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-
 **                              HEADERS
 */
-# include "../libft/includes/libft.h"		// libft library
-# include "../libft/includes/ft_printf.h"	// for ft_printf
-# include <stdint.h>						// for fixed-width integer types
-# include "types.h"							// for t_arguments
-# include "md5.h"							// for MD5 hash function
-# include <string.h>						// for strerror
-# include <fcntl.h>							// for open
-# include <errno.h>							// for errno
-# include <stdio.h>							// for printf (ERASE)
-# include <bits/getopt_core.h>	// Delete, just to fix intellisense vscode error
+# include "types.h"
 
 /*
 ** -.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-
 **                              DEFINES
 */
+# define BLOCK_SIZE			64		// Size in bytes (512 bits)
 
 /*
 ** -.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-
 **                              STRUCTS
 */
+typedef struct s_ssl_data
+{
+	t_arguments			args;
+	int					fd;
+}	t_ssl_data;
 
 /*
 ** -.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-
 **                        FUNCTION PROTOTYPES
 */
-/********************************** parser.c **********************************/
-void		print_error_and_exit(char *str);
-void		print_strerror_and_exit(char *msg, t_ssl_data *ssl_data);
-void		parse_arguments(int argc, char **argv, t_arguments *args);
+uint64_t	padding(t_ssl_data *ssl_data);
 
 #endif

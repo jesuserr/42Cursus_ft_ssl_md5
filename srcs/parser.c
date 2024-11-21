@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 17:12:02 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/11/20 20:16:39 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/11/21 17:13:43 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,27 +44,38 @@ void	print_strerror_and_exit(char *msg, t_ssl_data *ssl_data)
 	exit(EXIT_FAILURE);
 }
 
+void	parse_options(int opt, t_arguments *args)
+{
+	if (opt == 'h' || opt == '?')
+		print_usage();
+	else if (opt == 'p')
+		args->echo_stdin = true;
+	else if (opt == 'q')
+		args->quiet_mode = true;
+	else if (opt == 'r')
+		args->reverse_output = true;
+	else if (opt == 's' && args->print_sum == false)
+	{
+		args->print_sum = true;
+		args->input_string = optarg;
+	}
+}
+
+// Not final version, needs more testing
 void	parse_arguments(int argc, char **argv, t_arguments *args)
 {
 	int		opt;
 
-	opt = getopt(argc, argv, "h?pqrs");
+	opt = getopt(argc, argv, "h?pqrs:");
 	while (opt != -1)
 	{
-		if (opt == 'h' || opt == '?')
-			print_usage();
-		else if (opt == 'p')
-			args->echo_stdin = true;
-		else if (opt == 'q')
-			args->quiet_mode = true;
-		else if (opt == 'r')
-			args->reverse_output = true;
-		else if (opt == 's')
-			args->print_sum = true;
-		opt = getopt(argc, argv, "h?pqrs");
+		parse_options(opt, args);
+		opt = getopt(argc, argv, "h?pqrs:");
 	}
 	if (optind >= argc)
 		print_error_and_exit("Hash function required");
 	args->hash_function = argv[optind];
+	if (optind + 1 < argc)
+		args->input_file = argv[optind + 1];
 	return ;
 }

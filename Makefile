@@ -6,14 +6,14 @@
 #    By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/19 17:09:51 by jesuserr          #+#    #+#              #
-#    Updated: 2024/11/20 18:16:01 by jesuserr         ###   ########.fr        #
+#    Updated: 2024/11/21 15:49:50 by jesuserr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 LIBFT_DIR = libft/
 
 NAME = ft_ssl
-SRCS = main.c parser.c
+SRCS = main.c parser.c md5.c
 PATH_SRCS = ./srcs/
 PATH_OBJS = ./srcs/objs/
 PATH_DEPS = ./srcs/objs/
@@ -26,7 +26,7 @@ RM = rm -f
 CFLAGS = -Wall -Wextra -Werror -g -pedantic -Wshadow
 LDFLAGS = -lm
 
-NORM = $(addprefix $(PATH_SRCS), $(SRCS)) ./srcs/ft_ssl.h
+NORM = $(addprefix $(PATH_SRCS), $(SRCS)) ./srcs/*.h
 GREEN = "\033[0;92m"
 RED = "\033[0;91m"
 BLUE = "\033[0;94m"
