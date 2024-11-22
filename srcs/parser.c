@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 17:12:02 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/11/21 18:45:02 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/11/22 19:50:54 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,8 @@ void	print_strerror_and_exit(char *msg, t_ssl_data *ssl_data)
 	printf("%s: %s\n", msg, strerror(errno));
 	if (ssl_data && ssl_data->fd > 0)
 		close(ssl_data->fd);
+	if (ssl_data && ssl_data->pad_msg)
+		free(ssl_data->pad_msg);
 	exit(EXIT_FAILURE);
 }
 
