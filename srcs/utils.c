@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 22:21:30 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/11/24 12:17:08 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/11/24 19:43:07 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,4 +35,18 @@ void	modify_endianness_32_bits(uint32_t *nbr)
 {
 	*nbr = ((*nbr >> 24) & 0x000000FF) | ((*nbr >> 8) & 0x0000FF00) | \
 			((*nbr << 8) & 0x00FF0000) | ((*nbr << 24) & 0xFF000000);
+}
+
+// Prints given byte in hexadecimal format
+// 48 is ASCII code for '0', 87 is ASCII code for 'a'
+void	print_hex_byte(unsigned char byte)
+{
+	if ((byte >> 4) < 10)
+		ft_printf("%c", (byte >> 4) + 48);
+	else
+		ft_printf("%c", (byte >> 4) + 87);
+	if ((byte & 0x0F) < 10)
+		ft_printf("%c", (byte & 0x0F) + 48);
+	else
+		ft_printf("%c", (byte & 0x0F) + 87);
 }

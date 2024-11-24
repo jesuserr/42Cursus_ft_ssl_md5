@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 15:25:44 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/11/24 18:00:35 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/11/24 19:30:10 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,14 +72,20 @@ void	block_calculations(t_ssl_data *ssl_data, uint8_t i, uint64_t j)
 void	print_md5_digest(t_ssl_data *ssl_data)
 {
 	uint8_t	i;
+	uint8_t	*byte;
 
 	i = 0;
+	ft_printf("MD5 (\"%s\") = ", ssl_data->args.input_str);
 	while (i < 4)
 	{
-		modify_endianness_32_bits(&ssl_data->digest[i]);
-		printf("%08x", ssl_data->digest[i++]);
+		byte = (uint8_t *)&(ssl_data->digest[i]);
+		print_hex_byte(byte[0]);
+		print_hex_byte(byte[1]);
+		print_hex_byte(byte[2]);
+		print_hex_byte(byte[3]);
+		i++;
 	}
-	printf("\n");
+	ft_printf("\n");
 	return ;
 }
 
