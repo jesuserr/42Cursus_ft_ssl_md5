@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 17:12:02 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/11/22 19:50:54 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/11/24 19:47:00 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static void	print_usage(void)
 {
-	printf("Usage\n"
+	ft_printf("Usage\n"
 		"  ./ft_ssl command [flags] <file/string>\n\n"
 		"Options:\n"
 		"  command     \"md5\" or \"sha256\"\n"
@@ -28,9 +28,8 @@ static void	print_usage(void)
 
 void	print_error_and_exit(char *str)
 {
-	printf("ft_ssl: usage error: %s\n", str);
-	printf("Try 'ft_ssl -h' or 'ft_ssl -?' for more ");
-	printf("information.\n");
+	ft_printf("ft_ssl: usage error: %s\n", str);
+	ft_printf("Try 'ft_ssl -h' or 'ft_ssl -?' for more information.\n");
 	exit (EXIT_FAILURE);
 }
 
@@ -39,7 +38,7 @@ void	print_error_and_exit(char *str)
 // *** Revisar para que haga los frees pertinentes ***
 void	print_strerror_and_exit(char *msg, t_ssl_data *ssl_data)
 {
-	printf("%s: %s\n", msg, strerror(errno));
+	ft_printf("%s: %s\n", msg, strerror(errno));
 	if (ssl_data && ssl_data->fd > 0)
 		close(ssl_data->fd);
 	if (ssl_data && ssl_data->pad_msg)
