@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 15:25:42 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/11/22 22:12:15 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/11/24 13:31:23 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,8 @@
 **                              DEFINES
 */
 # define BLOCK_SIZE			64			// Size in bytes (512 bits)
-# define INIT_A				0x67452301	// Initial values for MD5 buffer
+# define WORD_SIZE			4			// Size in bytes (32 bits)
+# define INIT_A				0x67452301	// Initial values for MD5 buffer state
 # define INIT_B				0xefcdab89
 # define INIT_C				0x98badcfe
 # define INIT_D				0x10325476
@@ -38,7 +39,8 @@ typedef struct s_ssl_data
 	t_arguments			args;
 	uint64_t			msg_len;
 	char				*pad_msg;
-	uint64_t			pad_len;	
+	uint64_t			pad_len;
+	uint32_t			state[4];		// A, B, C, D
 	int					fd;
 }	t_ssl_data;
 
@@ -62,6 +64,21 @@ static const uint8_t	g_shift[64] = {
 	5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20,
 	4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23,
 	6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21};
+
+// Constants for MD5 Transformations - index to read from padded message
+static const uint8_t	g_index[64] = {
+	0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+	1, 6, 11, 0, 5, 10, 15, 4, 9, 14, 3, 8, 13, 2, 7, 12,
+	5, 8, 11, 14, 1, 4, 7, 10, 13, 0, 3, 6, 9, 12, 15, 2,
+	0, 7, 14, 5, 12, 3, 10, 1, 8, 15, 6, 13, 4, 11, 2, 9};
+
+enum	e_words
+{
+	A,
+	B,
+	C,
+	D
+};
 
 /*
 ** -.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-

@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 17:11:34 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/11/22 22:22:48 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/11/24 01:16:51 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,8 @@ void	print_strerror_and_exit(char *msg, t_ssl_data *ssl_data);
 void	parse_arguments(int argc, char **argv, t_arguments *args);
 
 /********************************** utils.c ***********************************/
-void	rotate_bits_right(uint32_t *nbr, int8_t bits);
-void	rotate_bits_left(uint32_t *nbr, int8_t bits);
+void	rotate_bits_right_32_bits(uint32_t *nbr, int8_t bits);
+void	rotate_bits_left_32_bits(uint32_t *nbr, int8_t bits);
+void	modify_endianness_32_bits(uint32_t *nbr);
 
 #endif
