@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 15:25:42 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/11/24 13:31:23 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/11/24 17:32:13 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,11 +41,16 @@ typedef struct s_ssl_data
 	char				*pad_msg;
 	uint64_t			pad_len;
 	uint32_t			state[4];		// A, B, C, D
+	uint32_t			digest[4];		// A, B, C, D
 	int					fd;
 }	t_ssl_data;
 
-// Constants for MD5 Transformations - addition constants for each round
-static const uint32_t	g_add[64] = {
+// Precomputed tables for MD5 Transformations
+
+// Constants derived from the sine function used in each round of the MD5
+// transformation process to add a level of complexity and ensure the diffusion
+// of the input data.
+static const uint32_t	g_sine_add[64] = {
 	0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee,	0xf57c0faf, 0x4787c62a,
 	0xa8304613, 0xfd469501,	0x698098d8, 0x8b44f7af, 0xffff5bb1, 0x895cd7be,
 	0x6b901122, 0xfd987193, 0xa679438e, 0x49b40821, 0xf61e2562, 0xc040b340,
@@ -58,14 +63,14 @@ static const uint32_t	g_add[64] = {
 	0xffeff47d, 0x85845dd1,	0x6fa87e4f, 0xfe2ce6e0, 0xa3014314, 0x4e0811a1,
 	0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391};
 
-// Constants for MD5 Transformations - shift amounts for each round
-static const uint8_t	g_shift[64] = {
+// Number of left rotations (at bit level) for each round.
+static const uint8_t	g_rotations[64] = {
 	7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22,
 	5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20,
 	4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23,
 	6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21};
 
-// Constants for MD5 Transformations - index to read from padded message
+// Position to read from padded message for each round.
 static const uint8_t	g_index[64] = {
 	0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
 	1, 6, 11, 0, 5, 10, 15, 4, 9, 14, 3, 8, 13, 2, 7, 12,
