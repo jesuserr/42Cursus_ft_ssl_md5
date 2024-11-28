@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 15:25:42 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/11/24 17:32:13 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/11/28 18:01:49 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,13 +36,12 @@
 */
 typedef struct s_ssl_data
 {
-	t_arguments			args;
+	t_arguments			*args;			// Passed as a pointer to avoid copying
 	uint64_t			msg_len;
 	char				*pad_msg;
 	uint64_t			pad_len;
 	uint32_t			state[4];		// A, B, C, D
 	uint32_t			digest[4];		// A, B, C, D
-	int					fd;
 }	t_ssl_data;
 
 // Precomputed tables for MD5 Transformations
@@ -89,6 +88,6 @@ enum	e_words
 ** -.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-
 **                        FUNCTION PROTOTYPES
 */
-void	md5_sum(t_ssl_data *ssl_data);
+void	md5_sum(t_arguments *args);
 
 #endif

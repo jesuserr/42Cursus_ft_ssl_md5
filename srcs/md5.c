@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 15:25:44 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/11/24 19:30:10 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/11/28 18:34:24 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,12 @@
 // Given a certain message, it is padded to a multiple of 512 bits and filled in
 // accordance with the MD5 algorithm. Length of the message is stored as a 
 // 64-bit integer in little-endian format. Initial values of the digest are set.
-void	create_padded_message(t_ssl_data *ssl_data)
+static void	create_padded_message(t_ssl_data *ssl_data)
 {
 	uint64_t	len;
 	uint64_t	len_bits;
 
-	len = ft_strlen(ssl_data->args.input_str);
+	len = ft_strlen(ssl_data->args->input_str);
 	ssl_data->msg_len = len;
 	if (len % BLOCK_SIZE < BLOCK_SIZE - 8 && len % BLOCK_SIZE != 0)
 		len = (len + BLOCK_SIZE - 1) & ~(BLOCK_SIZE - 1);
@@ -30,7 +30,7 @@ void	create_padded_message(t_ssl_data *ssl_data)
 	ssl_data->pad_msg = ft_calloc(ssl_data->pad_len, sizeof(uint8_t));
 	if (!ssl_data->pad_msg)
 		print_strerror_and_exit("ft_calloc", ssl_data);
-	ft_memcpy(ssl_data->pad_msg, ssl_data->args.input_str, ssl_data->msg_len);
+	ft_memcpy(ssl_data->pad_msg, ssl_data->args->input_str, ssl_data->msg_len);
 	ssl_data->pad_msg[ssl_data->msg_len] = (uint8_t)0x80;
 	len_bits = ssl_data->msg_len * 8;
 	ft_memcpy(ssl_data->pad_msg + ssl_data->pad_len - 8, &len_bits, 8);
@@ -41,7 +41,7 @@ void	create_padded_message(t_ssl_data *ssl_data)
 }
 
 // MD5 algorithm core function.
-void	block_calculations(t_ssl_data *ssl_data, uint8_t i, uint64_t j)
+static void	block_calculations(t_ssl_data *ssl_data, uint8_t i, uint64_t j)
 {
 	uint32_t	tmp_b;
 	uint64_t	index;
@@ -65,17 +65,16 @@ void	block_calculations(t_ssl_data *ssl_data, uint8_t i, uint64_t j)
 	ssl_data->state[D] = ssl_data->state[C];
 	ssl_data->state[C] = ssl_data->state[B];
 	ssl_data->state[B] = tmp_b;
-	return ;
 }
 
 // Print the digest in hexadecimal format.
-void	print_md5_digest(t_ssl_data *ssl_data)
+static void	print_md5_digest(t_ssl_data *ssl_data)
 {
 	uint8_t	i;
 	uint8_t	*byte;
 
 	i = 0;
-	ft_printf("MD5 (\"%s\") = ", ssl_data->args.input_str);
+	ft_printf("MD5 (\"%s\") = ", ssl_data->args->input_str);
 	while (i < 4)
 	{
 		byte = (uint8_t *)&(ssl_data->digest[i]);
@@ -86,33 +85,34 @@ void	print_md5_digest(t_ssl_data *ssl_data)
 		i++;
 	}
 	ft_printf("\n");
-	return ;
 }
 
 // Main function to calculate the MD5 digest.
-void	md5_sum(t_ssl_data *ssl_data)
+void	md5_sum(t_arguments *args)
 {
+	t_ssl_data	ssl_data;
 	uint8_t		i;
 	uint64_t	j;
 
-	create_padded_message(ssl_data);
+	ft_bzero(&ssl_data, sizeof(t_ssl_data));
+	ssl_data.args = args;
+	create_padded_message(&ssl_data);
 	j = 0;
-	while (j < ssl_data->pad_len / BLOCK_SIZE)
+	while (j < ssl_data.pad_len / BLOCK_SIZE)
 	{
-		ssl_data->state[A] = ssl_data->digest[A];
-		ssl_data->state[B] = ssl_data->digest[B];
-		ssl_data->state[C] = ssl_data->digest[C];
-		ssl_data->state[D] = ssl_data->digest[D];
+		ssl_data.state[A] = ssl_data.digest[A];
+		ssl_data.state[B] = ssl_data.digest[B];
+		ssl_data.state[C] = ssl_data.digest[C];
+		ssl_data.state[D] = ssl_data.digest[D];
 		i = 0;
 		while (i < BLOCK_SIZE)
-			block_calculations(ssl_data, i++, j);
-		ssl_data->digest[A] = ssl_data->digest[A] + ssl_data->state[A];
-		ssl_data->digest[B] = ssl_data->digest[B] + ssl_data->state[B];
-		ssl_data->digest[C] = ssl_data->digest[C] + ssl_data->state[C];
-		ssl_data->digest[D] = ssl_data->digest[D] + ssl_data->state[D];
+			block_calculations(&ssl_data, i++, j);
+		ssl_data.digest[A] = ssl_data.digest[A] + ssl_data.state[A];
+		ssl_data.digest[B] = ssl_data.digest[B] + ssl_data.state[B];
+		ssl_data.digest[C] = ssl_data.digest[C] + ssl_data.state[C];
+		ssl_data.digest[D] = ssl_data.digest[D] + ssl_data.state[D];
 		j++;
 	}
-	print_md5_digest(ssl_data);
-	free(ssl_data->pad_msg);
-	return ;
+	print_md5_digest(&ssl_data);
+	free(ssl_data.pad_msg);
 }

@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 17:12:02 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/11/24 19:47:00 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/11/28 18:33:51 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,18 +35,16 @@ void	print_error_and_exit(char *str)
 
 // Prints system error message, closes the socket (if ssl_data has been passed
 // containing an open socket) and then exits with EXIT_FAILURE status.
-// *** Revisar para que haga los frees pertinentes ***
+// *** Revisar para que haga los frees pertinentes / fd ***
 void	print_strerror_and_exit(char *msg, t_ssl_data *ssl_data)
 {
 	ft_printf("%s: %s\n", msg, strerror(errno));
-	if (ssl_data && ssl_data->fd > 0)
-		close(ssl_data->fd);
 	if (ssl_data && ssl_data->pad_msg)
 		free(ssl_data->pad_msg);
 	exit(EXIT_FAILURE);
 }
 
-void	parse_options(int opt, t_arguments *args)
+static void	parse_options(int opt, t_arguments *args)
 {
 	if (opt == 'h' || opt == '?')
 		print_usage();
@@ -79,5 +77,4 @@ void	parse_arguments(int argc, char **argv, t_arguments *args)
 	args->hash_function = argv[optind];
 	if (optind + 1 < argc)
 		args->input_file = argv[optind + 1];
-	return ;
 }
