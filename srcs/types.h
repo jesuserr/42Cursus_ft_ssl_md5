@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 15:31:27 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/11/21 18:38:19 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/11/28 20:11:12 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,19 @@ typedef struct s_arguments
 	bool		quiet_mode;
 	bool		reverse_output;
 	bool		print_sum;
+	int			fd;
 }	t_arguments;
+
+enum	e_words
+{
+	A,
+	B,
+	C,
+	D,
+	E,
+	F,
+	G,
+	H
+};
 
 #endif

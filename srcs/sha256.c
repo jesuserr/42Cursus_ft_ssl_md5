@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   md5.c                                              :+:      :+:    :+:   */
+/*   sha256.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/21 15:25:44 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/11/28 20:14:46 by jesuserr         ###   ########.fr       */
+/*   Created: 2024/11/28 19:00:42 by jesuserr          #+#    #+#             */
+/*   Updated: 2024/11/28 20:19:46 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 // Prints system error message, closes the socket (if ssl_data has been passed
 // containing an open socket) and then exits with EXIT_FAILURE status.
-static void	print_strerror_and_exit(char *msg, t_md5_data *ssl_data)
+static void	print_strerror_and_exit(char *msg, t_sha256_data *ssl_data)
 {
 	ft_printf("%s: %s\n", msg, strerror(errno));
 	if (ssl_data && ssl_data->args->fd > 0)
@@ -25,7 +25,7 @@ static void	print_strerror_and_exit(char *msg, t_md5_data *ssl_data)
 // Given a certain message, it is padded to a multiple of 512 bits and filled in
 // accordance with the MD5 algorithm. Length of the message is stored as a 
 // 64-bit integer in little-endian format. Initial values of the digest are set.
-static void	create_padded_message(t_md5_data *ssl_data)
+static void	create_padded_message(t_sha256_data *ssl_data)
 {
 	uint64_t	len;
 	uint64_t	len_bits;
@@ -51,7 +51,7 @@ static void	create_padded_message(t_md5_data *ssl_data)
 }
 
 // MD5 algorithm core function.
-static void	block_calculations(t_md5_data *ssl_data, uint8_t i, uint64_t j)
+static void	block_calculations(t_sha256_data *ssl_data, uint8_t i, uint64_t j)
 {
 	uint32_t	tmp_b;
 	uint64_t	index;
@@ -66,10 +66,10 @@ static void	block_calculations(t_md5_data *ssl_data, uint8_t i, uint64_t j)
 		tmp_b = ssl_data->state[B] ^ ssl_data->state[C] ^ ssl_data->state[D];
 	else if (i >= 48 && i < 64)
 		tmp_b = ssl_data->state[C] ^ (ssl_data->state[B] | ~ssl_data->state[D]);
-	tmp_b = tmp_b + ssl_data->state[A] + g_md5_sine_add[i];
-	index = (j * BLOCK_SIZE) + (g_md5_index[i] * WORD_SIZE);
+	tmp_b = tmp_b + ssl_data->state[A] + g_sha256_sine_add[i];
+	index = (j * BLOCK_SIZE) + (g_sha256_index[i] * WORD_SIZE);
 	tmp_b = tmp_b + *((uint32_t *)(ssl_data->pad_msg + index));
-	rotate_bits_left_32_bits(&tmp_b, g_md5_rotations[i]);
+	rotate_bits_left_32_bits(&tmp_b, g_sha256_rotations[i]);
 	tmp_b = tmp_b + ssl_data->state[B];
 	ssl_data->state[A] = ssl_data->state[D];
 	ssl_data->state[D] = ssl_data->state[C];
@@ -78,7 +78,7 @@ static void	block_calculations(t_md5_data *ssl_data, uint8_t i, uint64_t j)
 }
 
 // Print the digest in hexadecimal format.
-static void	print_md5_digest(t_md5_data *ssl_data)
+static void	print_md5_digest(t_sha256_data *ssl_data)
 {
 	uint8_t	i;
 	uint8_t	*byte;
@@ -98,13 +98,13 @@ static void	print_md5_digest(t_md5_data *ssl_data)
 }
 
 // Main function to calculate the MD5 digest.
-void	md5_sum(t_arguments *args)
+void	sha256_sum(t_arguments *args)
 {
-	t_md5_data	ssl_data;
-	uint8_t		i;
-	uint64_t	j;
+	t_sha256_data	ssl_data;
+	uint8_t			i;
+	uint64_t		j;
 
-	ft_bzero(&ssl_data, sizeof(t_md5_data));
+	ft_bzero(&ssl_data, sizeof(t_sha256_data));
 	ssl_data.args = args;
 	create_padded_message(&ssl_data);
 	j = 0;

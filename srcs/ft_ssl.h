@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 17:11:34 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/11/24 19:29:47 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/11/28 19:01:02 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 # include <stdint.h>						// for fixed-width integer types
 # include "types.h"							// for t_arguments
 # include "md5.h"							// for MD5 hash function
+# include "sha256.h"						// for SHA256 hash function
 # include <string.h>						// for strerror
 # include <fcntl.h>							// for open
 # include <errno.h>							// for errno
@@ -44,7 +45,6 @@
 */
 /********************************** parser.c **********************************/
 void	print_error_and_exit(char *str);
-void	print_strerror_and_exit(char *msg, t_ssl_data *ssl_data);
 void	parse_arguments(int argc, char **argv, t_arguments *args);
 
 /********************************** utils.c ***********************************/

@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   md5.h                                              :+:      :+:    :+:   */
+/*   sha256.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/21 15:25:42 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/11/28 19:51:41 by jesuserr         ###   ########.fr       */
+/*   Created: 2024/11/28 19:00:47 by jesuserr          #+#    #+#             */
+/*   Updated: 2024/11/28 20:09:28 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MD5_H
-# define MD5_H
+#ifndef SHA256_H
+# define SHA256_H
 
 /*
 ** -.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-
@@ -29,12 +29,13 @@
 # define INIT_B				0xefcdab89
 # define INIT_C				0x98badcfe
 # define INIT_D				0x10325476
+// RENAME ALL TO AVOID CONFLICTS WITH MD5
 
 /*
 ** -.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-
 **                              STRUCTS
 */
-typedef struct s_md5_data
+typedef struct s_sha256_data
 {
 	t_arguments			*args;			// Passed as a pointer to avoid copying
 	uint64_t			msg_len;
@@ -42,14 +43,14 @@ typedef struct s_md5_data
 	uint64_t			pad_len;
 	uint32_t			state[4];		// A, B, C, D
 	uint32_t			digest[4];		// A, B, C, D
-}	t_md5_data;
+}	t_sha256_data;
 
 // Precomputed tables for MD5 Transformations
 
 // Constants derived from the sine function used in each round of the MD5
 // transformation process to add a level of complexity and ensure the diffusion
 // of the input data.
-static const uint32_t	g_md5_sine_add[64] = {
+static const uint32_t	g_sha256_sine_add[64] = {
 	0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee,	0xf57c0faf, 0x4787c62a,
 	0xa8304613, 0xfd469501,	0x698098d8, 0x8b44f7af, 0xffff5bb1, 0x895cd7be,
 	0x6b901122, 0xfd987193, 0xa679438e, 0x49b40821, 0xf61e2562, 0xc040b340,
@@ -63,14 +64,14 @@ static const uint32_t	g_md5_sine_add[64] = {
 	0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391};
 
 // Number of left rotations (at bit level) for each round.
-static const uint8_t	g_md5_rotations[64] = {
+static const uint8_t	g_sha256_rotations[64] = {
 	7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22,
 	5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20,
 	4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23,
 	6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21};
 
 // Position to read from padded message for each round.
-static const uint8_t	g_md5_index[64] = {
+static const uint8_t	g_sha256_index[64] = {
 	0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
 	1, 6, 11, 0, 5, 10, 15, 4, 9, 14, 3, 8, 13, 2, 7, 12,
 	5, 8, 11, 14, 1, 4, 7, 10, 13, 0, 3, 6, 9, 12, 15, 2,
@@ -80,6 +81,6 @@ static const uint8_t	g_md5_index[64] = {
 ** -.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-
 **                        FUNCTION PROTOTYPES
 */
-void	md5_sum(t_arguments *args);
+void	sha256_sum(t_arguments *args);
 
 #endif
