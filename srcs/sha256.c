@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:00:42 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/11/28 20:19:46 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/11/28 22:17:16 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@ static void	print_strerror_and_exit(char *msg, t_sha256_data *ssl_data)
 }
 
 // Given a certain message, it is padded to a multiple of 512 bits and filled in
-// accordance with the MD5 algorithm. Length of the message is stored as a 
-// 64-bit integer in little-endian format. Initial values of the digest are set.
+// accordance with the SHA256 algorithm. Length of the message is stored as a 
+// 64-bit integer in big-endian format. Initial values of the digest are set.
 static void	create_padded_message(t_sha256_data *ssl_data)
 {
 	uint64_t	len;
@@ -32,10 +32,10 @@ static void	create_padded_message(t_sha256_data *ssl_data)
 
 	len = ft_strlen(ssl_data->args->input_str);
 	ssl_data->msg_len = len;
-	if (len % BLOCK_SIZE < BLOCK_SIZE - 8 && len % BLOCK_SIZE != 0)
-		len = (len + BLOCK_SIZE - 1) & ~(BLOCK_SIZE - 1);
+	if (len % SHA256_BLOCK < SHA256_BLOCK - 8 && len % SHA256_BLOCK != 0)
+		len = (len + SHA256_BLOCK - 1) & ~(SHA256_BLOCK - 1);
 	else
-		len = ((len + BLOCK_SIZE - 1) & ~(BLOCK_SIZE - 1)) + BLOCK_SIZE;
+		len = ((len + SHA256_BLOCK - 1) & ~(SHA256_BLOCK - 1)) + SHA256_BLOCK;
 	ssl_data->pad_len = len;
 	ssl_data->pad_msg = ft_calloc(ssl_data->pad_len, sizeof(uint8_t));
 	if (!ssl_data->pad_msg)
@@ -43,14 +43,19 @@ static void	create_padded_message(t_sha256_data *ssl_data)
 	ft_memcpy(ssl_data->pad_msg, ssl_data->args->input_str, ssl_data->msg_len);
 	ssl_data->pad_msg[ssl_data->msg_len] = (uint8_t)0x80;
 	len_bits = ssl_data->msg_len * 8;
+	modify_endianness_64_bits(&len_bits);
 	ft_memcpy(ssl_data->pad_msg + ssl_data->pad_len - 8, &len_bits, 8);
-	ssl_data->digest[A] = INIT_A;
-	ssl_data->digest[B] = INIT_B;
-	ssl_data->digest[C] = INIT_C;
-	ssl_data->digest[D] = INIT_D;
+	ssl_data->digest[A] = SHA256_INIT_A;
+	ssl_data->digest[B] = SHA256_INIT_B;
+	ssl_data->digest[C] = SHA256_INIT_C;
+	ssl_data->digest[D] = SHA256_INIT_D;
+	ssl_data->digest[E] = SHA256_INIT_E;
+	ssl_data->digest[F] = SHA256_INIT_F;
+	ssl_data->digest[G] = SHA256_INIT_G;
+	ssl_data->digest[H] = SHA256_INIT_H;
 }
 
-// MD5 algorithm core function.
+// SHA256 algorithm core function.
 static void	block_calculations(t_sha256_data *ssl_data, uint8_t i, uint64_t j)
 {
 	uint32_t	tmp_b;
@@ -66,8 +71,8 @@ static void	block_calculations(t_sha256_data *ssl_data, uint8_t i, uint64_t j)
 		tmp_b = ssl_data->state[B] ^ ssl_data->state[C] ^ ssl_data->state[D];
 	else if (i >= 48 && i < 64)
 		tmp_b = ssl_data->state[C] ^ (ssl_data->state[B] | ~ssl_data->state[D]);
-	tmp_b = tmp_b + ssl_data->state[A] + g_sha256_sine_add[i];
-	index = (j * BLOCK_SIZE) + (g_sha256_index[i] * WORD_SIZE);
+	tmp_b = tmp_b + ssl_data->state[A] + g_sha256_roots_add[i];
+	index = (j * SHA256_BLOCK) + (g_sha256_index[i] * SHA256_WORD_SIZE);
 	tmp_b = tmp_b + *((uint32_t *)(ssl_data->pad_msg + index));
 	rotate_bits_left_32_bits(&tmp_b, g_sha256_rotations[i]);
 	tmp_b = tmp_b + ssl_data->state[B];
@@ -78,26 +83,26 @@ static void	block_calculations(t_sha256_data *ssl_data, uint8_t i, uint64_t j)
 }
 
 // Print the digest in hexadecimal format.
-static void	print_md5_digest(t_sha256_data *ssl_data)
+static void	print_sha256_digest(t_sha256_data *ssl_data)
 {
 	uint8_t	i;
+	uint8_t	j;
 	uint8_t	*byte;
 
 	i = 0;
-	ft_printf("MD5 (\"%s\") = ", ssl_data->args->input_str);
+	ft_printf("SHA256 (\"%s\") = ", ssl_data->args->input_str);
 	while (i < 4)
 	{
 		byte = (uint8_t *)&(ssl_data->digest[i]);
-		print_hex_byte(byte[0]);
-		print_hex_byte(byte[1]);
-		print_hex_byte(byte[2]);
-		print_hex_byte(byte[3]);
+		j = 0;
+		while (j < 8)
+			print_hex_byte(byte[j++]);
 		i++;
 	}
 	ft_printf("\n");
 }
 
-// Main function to calculate the MD5 digest.
+// Main function to calculate the SHA256 digest.
 void	sha256_sum(t_arguments *args)
 {
 	t_sha256_data	ssl_data;
@@ -107,15 +112,18 @@ void	sha256_sum(t_arguments *args)
 	ft_bzero(&ssl_data, sizeof(t_sha256_data));
 	ssl_data.args = args;
 	create_padded_message(&ssl_data);
+	printf("pad_len: %lu\n", ssl_data.pad_len);
+	ft_hex_dump(ssl_data.pad_msg, ssl_data.pad_len, 16);
+	//return ;
 	j = 0;
-	while (j < ssl_data.pad_len / BLOCK_SIZE)
+	while (j < ssl_data.pad_len / SHA256_BLOCK)
 	{
 		ssl_data.state[A] = ssl_data.digest[A];
 		ssl_data.state[B] = ssl_data.digest[B];
 		ssl_data.state[C] = ssl_data.digest[C];
 		ssl_data.state[D] = ssl_data.digest[D];
 		i = 0;
-		while (i < BLOCK_SIZE)
+		while (i < SHA256_BLOCK)
 			block_calculations(&ssl_data, i++, j);
 		ssl_data.digest[A] = ssl_data.digest[A] + ssl_data.state[A];
 		ssl_data.digest[B] = ssl_data.digest[B] + ssl_data.state[B];
@@ -123,6 +131,6 @@ void	sha256_sum(t_arguments *args)
 		ssl_data.digest[D] = ssl_data.digest[D] + ssl_data.state[D];
 		j++;
 	}
-	print_md5_digest(&ssl_data);
+	print_sha256_digest(&ssl_data);
 	free(ssl_data.pad_msg);
 }

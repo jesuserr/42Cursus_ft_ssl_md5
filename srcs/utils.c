@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 22:21:30 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/11/24 19:43:07 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/11/28 21:48:55 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,18 @@ void	modify_endianness_32_bits(uint32_t *nbr)
 {
 	*nbr = ((*nbr >> 24) & 0x000000FF) | ((*nbr >> 8) & 0x0000FF00) | \
 			((*nbr << 8) & 0x00FF0000) | ((*nbr << 24) & 0xFF000000);
+}
+
+void	modify_endianness_64_bits(uint64_t *nbr)
+{
+	*nbr = ((*nbr >> 56) & 0x00000000000000FF) | \
+			((*nbr >> 40) & 0x000000000000FF00) | \
+			((*nbr >> 24) & 0x0000000000FF0000) | \
+			((*nbr >> 8) & 0x00000000FF000000) | \
+			((*nbr << 8) & 0x000000FF00000000) | \
+			((*nbr << 24) & 0x0000FF0000000000) | \
+			((*nbr << 40) & 0x00FF000000000000) | \
+			((*nbr << 56) & 0xFF00000000000000);
 }
 
 // Prints given byte in hexadecimal format

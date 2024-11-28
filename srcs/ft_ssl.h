@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 17:11:34 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/11/28 19:01:02 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/11/28 21:45:45 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ void	parse_arguments(int argc, char **argv, t_arguments *args);
 void	rotate_bits_right_32_bits(uint32_t *nbr, int8_t bits);
 void	rotate_bits_left_32_bits(uint32_t *nbr, int8_t bits);
 void	modify_endianness_32_bits(uint32_t *nbr);
+void	modify_endianness_64_bits(uint64_t *nbr);
 void	print_hex_byte(uint8_t byte);
 
 #endif
