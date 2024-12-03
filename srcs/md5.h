@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 15:25:42 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/11/28 19:51:41 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/03 11:04:44 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,8 @@
 ** -.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-
 **                              DEFINES
 */
-# define BLOCK_SIZE			64			// Size in bytes (512 bits)
-# define WORD_SIZE			4			// Size in bytes (32 bits)
-# define INIT_A				0x67452301	// Initial values for MD5 buffer state
-# define INIT_B				0xefcdab89
-# define INIT_C				0x98badcfe
-# define INIT_D				0x10325476
+# define MD5_BLOCK			64			// Size in bytes (512 bits)
+# define MD5_WORD_SIZE		4			// Size in bytes (32 bits)
 
 /*
 ** -.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-
@@ -45,6 +41,10 @@ typedef struct s_md5_data
 }	t_md5_data;
 
 // Precomputed tables for MD5 Transformations
+
+// Initial values for MD5 buffer digest
+static const uint32_t	g_md5_inits[4] = {
+	0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476};
 
 // Constants derived from the sine function used in each round of the MD5
 // transformation process to add a level of complexity and ensure the diffusion

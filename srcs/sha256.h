@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:00:47 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/11/28 22:10:51 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/03 09:22:37 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,6 @@
 */
 # define SHA256_BLOCK		64			// Size in bytes (512 bits)
 # define SHA256_WORD_SIZE	4			// Size in bytes (32 bits)
-# define SHA256_INIT_A		0x6a09e667	// Initial values for SHA256 buffer
-# define SHA256_INIT_B		0xbb67ae85
-# define SHA256_INIT_C		0x3c6ef372
-# define SHA256_INIT_D		0xa54ff53a
-# define SHA256_INIT_E		0x510e527f
-# define SHA256_INIT_F		0x9b05688c
-# define SHA256_INIT_G		0x1f83d9ab
-# define SHA256_INIT_H		0x5be0cd19
 
 /*
 ** -.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-
@@ -40,15 +32,27 @@
 */
 typedef struct s_sha256_data
 {
-	t_arguments			*args;			// Passed as a pointer to avoid copying
-	uint64_t			msg_len;
-	char				*pad_msg;
-	uint64_t			pad_len;
-	uint32_t			state[8];		// A, B, C, D, E, F, G, H
-	uint32_t			digest[8];		// A, B, C, D, E, F, G, H
+	t_arguments	*args;			// Passed as a pointer to avoid copying
+	uint64_t	msg_len;
+	char		*pad_msg;
+	uint64_t	pad_len;
+	uint32_t	digest[8];		// A, B, C, D, E, F, G, H
+	uint32_t	state[8];		// A, B, C, D, E, F, G, H
+	uint32_t	schedule[64];
+	uint32_t	s0;
+	uint32_t	s1;
+	uint32_t	ch;
+	uint32_t	maj;
 }	t_sha256_data;
 
 // Precomputed tables for SHA256 Transformations
+
+// Initial values for SHA256 buffer, derived from the first 32 bits of the
+// fractional parts of the square roots of the first 8 primes (2, 3, 5, 7, 11,
+// 13, 17, 19).
+static const uint32_t	g_sha256_inits[8] = {
+	0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,
+	0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19};
 
 // Constants derived from the fractional parts of the cube roots of the first
 // 64 primes used in each round of the SHA256 transformation process to add a
@@ -65,20 +69,6 @@ static const uint32_t	g_sha256_roots_add[64] = {
 	0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a,
 	0x5b9cca4f, 0x682e6ff3, 0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208,
 	0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2};
-
-// Number of left rotations (at bit level) for each round. REVISE
-static const uint8_t	g_sha256_rotations[64] = {
-	7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22,
-	5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20,
-	4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23,
-	6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21};
-
-// Position to read from padded message for each round. REVISE
-static const uint8_t	g_sha256_index[64] = {
-	0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-	1, 6, 11, 0, 5, 10, 15, 4, 9, 14, 3, 8, 13, 2, 7, 12,
-	5, 8, 11, 14, 1, 4, 7, 10, 13, 0, 3, 6, 9, 12, 15, 2,
-	0, 7, 14, 5, 12, 3, 10, 1, 8, 15, 6, 13, 4, 11, 2, 9};
 
 /*
 ** -.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-

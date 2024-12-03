@@ -6,21 +6,11 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:00:42 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/11/28 22:17:16 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/03 11:00:07 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ssl.h"
-
-// Prints system error message, closes the socket (if ssl_data has been passed
-// containing an open socket) and then exits with EXIT_FAILURE status.
-static void	print_strerror_and_exit(char *msg, t_sha256_data *ssl_data)
-{
-	ft_printf("%s: %s\n", msg, strerror(errno));
-	if (ssl_data && ssl_data->args->fd > 0)
-		close(ssl_data->args->fd);
-	exit(EXIT_FAILURE);
-}
 
 // Given a certain message, it is padded to a multiple of 512 bits and filled in
 // accordance with the SHA256 algorithm. Length of the message is stored as a 
@@ -39,47 +29,71 @@ static void	create_padded_message(t_sha256_data *ssl_data)
 	ssl_data->pad_len = len;
 	ssl_data->pad_msg = ft_calloc(ssl_data->pad_len, sizeof(uint8_t));
 	if (!ssl_data->pad_msg)
-		print_strerror_and_exit("ft_calloc", ssl_data);
+		print_strerror_and_exit("ft_calloc", ssl_data->args->fd);
 	ft_memcpy(ssl_data->pad_msg, ssl_data->args->input_str, ssl_data->msg_len);
 	ssl_data->pad_msg[ssl_data->msg_len] = (uint8_t)0x80;
 	len_bits = ssl_data->msg_len * 8;
 	modify_endianness_64_bits(&len_bits);
 	ft_memcpy(ssl_data->pad_msg + ssl_data->pad_len - 8, &len_bits, 8);
-	ssl_data->digest[A] = SHA256_INIT_A;
-	ssl_data->digest[B] = SHA256_INIT_B;
-	ssl_data->digest[C] = SHA256_INIT_C;
-	ssl_data->digest[D] = SHA256_INIT_D;
-	ssl_data->digest[E] = SHA256_INIT_E;
-	ssl_data->digest[F] = SHA256_INIT_F;
-	ssl_data->digest[G] = SHA256_INIT_G;
-	ssl_data->digest[H] = SHA256_INIT_H;
+	ft_memcpy(ssl_data->digest, g_sha256_inits, 32);
 }
 
-// SHA256 algorithm core function.
-static void	block_calculations(t_sha256_data *ssl_data, uint8_t i, uint64_t j)
+// Create message schedule for the current block of the message.
+// 'w' used as a kind of alias for 'schedule' to make the code more readable.
+// 'j' is the current block number.
+static void	create_message_schedule(t_sha256_data *ssl_data, uint64_t j)
 {
-	uint32_t	tmp_b;
-	uint64_t	index;
+	uint8_t		i;
+	uint32_t	*w;
 
-	if (i < 16)
-		tmp_b = (ssl_data->state[B] & ssl_data->state[C]) | \
-		(~ssl_data->state[B] & ssl_data->state[D]);
-	else if (i >= 16 && i < 32)
-		tmp_b = (ssl_data->state[B] & ssl_data->state[D]) | \
-		(ssl_data->state[C] & ~ssl_data->state[D]);
-	else if (i >= 32 && i < 48)
-		tmp_b = ssl_data->state[B] ^ ssl_data->state[C] ^ ssl_data->state[D];
-	else if (i >= 48 && i < 64)
-		tmp_b = ssl_data->state[C] ^ (ssl_data->state[B] | ~ssl_data->state[D]);
-	tmp_b = tmp_b + ssl_data->state[A] + g_sha256_roots_add[i];
-	index = (j * SHA256_BLOCK) + (g_sha256_index[i] * SHA256_WORD_SIZE);
-	tmp_b = tmp_b + *((uint32_t *)(ssl_data->pad_msg + index));
-	rotate_bits_left_32_bits(&tmp_b, g_sha256_rotations[i]);
-	tmp_b = tmp_b + ssl_data->state[B];
-	ssl_data->state[A] = ssl_data->state[D];
-	ssl_data->state[D] = ssl_data->state[C];
-	ssl_data->state[C] = ssl_data->state[B];
-	ssl_data->state[B] = tmp_b;
+	w = ssl_data->schedule;
+	i = 0;
+	while (i < 16)
+	{
+		w[i] = *(((uint32_t *)(ssl_data->pad_msg) + i + (j * 16)));
+		modify_endianness_32_bits(&w[i]);
+		i++;
+	}
+	while (i < 64)
+	{
+		ssl_data->s0 = right_rotation(w[i - 15], 7) ^ \
+		right_rotation(w[i - 15], 18) ^ (w[i - 15] >> 3);
+		ssl_data->s1 = right_rotation(w[i - 2], 17) ^ \
+		right_rotation(w[i - 2], 19) ^ (w[i - 2] >> 10);
+		w[i] = w[i - 16] + ssl_data->s0 + w[i - 7] + ssl_data->s1;
+		i++;
+	}
+	ft_memcpy(ssl_data->state, ssl_data->digest, 32);
+}
+
+// Compression function for the current block of the message.
+// 'state' used as a kind of alias for 'ssl_data->state' to make the code more
+// readable. 'i' is the current round number (0-63).
+static void	compression_function(t_sha256_data *ssl_data, uint8_t i)
+{
+	uint32_t	tmp1;
+	uint32_t	tmp2;
+	uint32_t	*state;
+
+	state = ssl_data->state;
+	ssl_data->s1 = right_rotation(state[E], 6) ^ right_rotation(state[E], 11) \
+	^ right_rotation(state[E], 25);
+	ssl_data->ch = (state[E] & state[F]) ^ ((~state[E]) & state[G]);
+	tmp1 = state[H] + ssl_data->s1 + ssl_data->ch + g_sha256_roots_add[i] + \
+	ssl_data->schedule[i];
+	ssl_data->s0 = right_rotation(state[A], 2) ^ right_rotation(state[A], 13) \
+	^ right_rotation(state[A], 22);
+	ssl_data->maj = (state[A] & state[B]) ^ (state[A] & state[C]) ^ \
+	(state[B] & state[C]);
+	tmp2 = ssl_data->s0 + ssl_data->maj;
+	state[H] = state[G];
+	state[G] = state[F];
+	state[F] = state[E];
+	state[E] = state[D] + tmp1;
+	state[D] = state[C];
+	state[C] = state[B];
+	state[B] = state[A];
+	state[A] = tmp1 + tmp2;
 }
 
 // Print the digest in hexadecimal format.
@@ -91,12 +105,12 @@ static void	print_sha256_digest(t_sha256_data *ssl_data)
 
 	i = 0;
 	ft_printf("SHA256 (\"%s\") = ", ssl_data->args->input_str);
-	while (i < 4)
+	while (i < 8)
 	{
 		byte = (uint8_t *)&(ssl_data->digest[i]);
-		j = 0;
-		while (j < 8)
-			print_hex_byte(byte[j++]);
+		j = 4;
+		while (j-- > 0)
+			print_hex_byte(byte[j]);
 		i++;
 	}
 	ft_printf("\n");
@@ -112,24 +126,21 @@ void	sha256_sum(t_arguments *args)
 	ft_bzero(&ssl_data, sizeof(t_sha256_data));
 	ssl_data.args = args;
 	create_padded_message(&ssl_data);
-	printf("pad_len: %lu\n", ssl_data.pad_len);
-	ft_hex_dump(ssl_data.pad_msg, ssl_data.pad_len, 16);
-	//return ;
 	j = 0;
 	while (j < ssl_data.pad_len / SHA256_BLOCK)
 	{
-		ssl_data.state[A] = ssl_data.digest[A];
-		ssl_data.state[B] = ssl_data.digest[B];
-		ssl_data.state[C] = ssl_data.digest[C];
-		ssl_data.state[D] = ssl_data.digest[D];
+		create_message_schedule(&ssl_data, j++);
 		i = 0;
 		while (i < SHA256_BLOCK)
-			block_calculations(&ssl_data, i++, j);
-		ssl_data.digest[A] = ssl_data.digest[A] + ssl_data.state[A];
-		ssl_data.digest[B] = ssl_data.digest[B] + ssl_data.state[B];
-		ssl_data.digest[C] = ssl_data.digest[C] + ssl_data.state[C];
-		ssl_data.digest[D] = ssl_data.digest[D] + ssl_data.state[D];
-		j++;
+			compression_function(&ssl_data, i++);
+		ssl_data.digest[A] += ssl_data.state[A];
+		ssl_data.digest[B] += ssl_data.state[B];
+		ssl_data.digest[C] += ssl_data.state[C];
+		ssl_data.digest[D] += ssl_data.state[D];
+		ssl_data.digest[E] += ssl_data.state[E];
+		ssl_data.digest[F] += ssl_data.state[F];
+		ssl_data.digest[G] += ssl_data.state[G];
+		ssl_data.digest[H] += ssl_data.state[H];
 	}
 	print_sha256_digest(&ssl_data);
 	free(ssl_data.pad_msg);

@@ -6,21 +6,11 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 15:25:44 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/11/28 20:14:46 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/03 11:04:35 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ssl.h"
-
-// Prints system error message, closes the socket (if ssl_data has been passed
-// containing an open socket) and then exits with EXIT_FAILURE status.
-static void	print_strerror_and_exit(char *msg, t_md5_data *ssl_data)
-{
-	ft_printf("%s: %s\n", msg, strerror(errno));
-	if (ssl_data && ssl_data->args->fd > 0)
-		close(ssl_data->args->fd);
-	exit(EXIT_FAILURE);
-}
 
 // Given a certain message, it is padded to a multiple of 512 bits and filled in
 // accordance with the MD5 algorithm. Length of the message is stored as a 
@@ -32,22 +22,19 @@ static void	create_padded_message(t_md5_data *ssl_data)
 
 	len = ft_strlen(ssl_data->args->input_str);
 	ssl_data->msg_len = len;
-	if (len % BLOCK_SIZE < BLOCK_SIZE - 8 && len % BLOCK_SIZE != 0)
-		len = (len + BLOCK_SIZE - 1) & ~(BLOCK_SIZE - 1);
+	if (len % MD5_BLOCK < MD5_BLOCK - 8 && len % MD5_BLOCK != 0)
+		len = (len + MD5_BLOCK - 1) & ~(MD5_BLOCK - 1);
 	else
-		len = ((len + BLOCK_SIZE - 1) & ~(BLOCK_SIZE - 1)) + BLOCK_SIZE;
+		len = ((len + MD5_BLOCK - 1) & ~(MD5_BLOCK - 1)) + MD5_BLOCK;
 	ssl_data->pad_len = len;
 	ssl_data->pad_msg = ft_calloc(ssl_data->pad_len, sizeof(uint8_t));
 	if (!ssl_data->pad_msg)
-		print_strerror_and_exit("ft_calloc", ssl_data);
+		print_strerror_and_exit("ft_calloc", ssl_data->args->fd);
 	ft_memcpy(ssl_data->pad_msg, ssl_data->args->input_str, ssl_data->msg_len);
 	ssl_data->pad_msg[ssl_data->msg_len] = (uint8_t)0x80;
 	len_bits = ssl_data->msg_len * 8;
 	ft_memcpy(ssl_data->pad_msg + ssl_data->pad_len - 8, &len_bits, 8);
-	ssl_data->digest[A] = INIT_A;
-	ssl_data->digest[B] = INIT_B;
-	ssl_data->digest[C] = INIT_C;
-	ssl_data->digest[D] = INIT_D;
+	ft_memcpy(ssl_data->digest, g_md5_inits, 16);
 }
 
 // MD5 algorithm core function.
@@ -67,10 +54,9 @@ static void	block_calculations(t_md5_data *ssl_data, uint8_t i, uint64_t j)
 	else if (i >= 48 && i < 64)
 		tmp_b = ssl_data->state[C] ^ (ssl_data->state[B] | ~ssl_data->state[D]);
 	tmp_b = tmp_b + ssl_data->state[A] + g_md5_sine_add[i];
-	index = (j * BLOCK_SIZE) + (g_md5_index[i] * WORD_SIZE);
+	index = (j * MD5_BLOCK) + (g_md5_index[i] * MD5_WORD_SIZE);
 	tmp_b = tmp_b + *((uint32_t *)(ssl_data->pad_msg + index));
-	rotate_bits_left_32_bits(&tmp_b, g_md5_rotations[i]);
-	tmp_b = tmp_b + ssl_data->state[B];
+	tmp_b = left_rotation(tmp_b, g_md5_rotations[i]) + ssl_data->state[B];
 	ssl_data->state[A] = ssl_data->state[D];
 	ssl_data->state[D] = ssl_data->state[C];
 	ssl_data->state[C] = ssl_data->state[B];
@@ -108,14 +94,11 @@ void	md5_sum(t_arguments *args)
 	ssl_data.args = args;
 	create_padded_message(&ssl_data);
 	j = 0;
-	while (j < ssl_data.pad_len / BLOCK_SIZE)
+	while (j < ssl_data.pad_len / MD5_BLOCK)
 	{
-		ssl_data.state[A] = ssl_data.digest[A];
-		ssl_data.state[B] = ssl_data.digest[B];
-		ssl_data.state[C] = ssl_data.digest[C];
-		ssl_data.state[D] = ssl_data.digest[D];
+		ft_memcpy(ssl_data.state, ssl_data.digest, 16);
 		i = 0;
-		while (i < BLOCK_SIZE)
+		while (i < MD5_BLOCK)
 			block_calculations(&ssl_data, i++, j);
 		ssl_data.digest[A] = ssl_data.digest[A] + ssl_data.state[A];
 		ssl_data.digest[B] = ssl_data.digest[B] + ssl_data.state[B];
