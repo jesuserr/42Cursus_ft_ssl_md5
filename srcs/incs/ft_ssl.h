@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 17:11:34 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/03 14:56:48 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/03 20:20:59 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@
 ** -.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-
 **                              HEADERS
 */
-# include "../libft/includes/libft.h"		// libft library
-# include "../libft/includes/ft_printf.h"	// for ft_printf
+# include "../../libft/includes/libft.h"		// libft library
+# include "../../libft/includes/ft_printf.h"	// for ft_printf
 # include <stdint.h>						// for fixed-width integer types
 # include "types.h"							// for t_arguments
 # include "md5.h"							// for MD5 hash function

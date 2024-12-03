@@ -6,11 +6,11 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 22:21:30 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/03 10:41:43 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/03 20:20:38 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_ssl.h"
+#include "incs/ft_ssl.h"
 
 // Prints given byte in hexadecimal format
 // 48 is ASCII code for '0', 87 is ASCII code for 'a'

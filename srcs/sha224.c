@@ -6,11 +6,11 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 14:33:08 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/03 14:44:46 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/03 20:20:41 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_ssl.h"
+#include "incs/ft_ssl.h"
 
 // Given a certain message, it is padded to a multiple of 512 bits and filled in
 // accordance with the SHA224 algorithm. Length of the message is stored as a 
