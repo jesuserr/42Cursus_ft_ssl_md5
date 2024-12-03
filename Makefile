@@ -6,14 +6,14 @@
 #    By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/19 17:09:51 by jesuserr          #+#    #+#              #
-#    Updated: 2024/12/03 10:42:05 by jesuserr         ###   ########.fr        #
+#    Updated: 2024/12/03 14:27:49 by jesuserr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 LIBFT_DIR = libft/
 
 NAME = ft_ssl
-SRCS = main.c parser.c md5.c print_utils.c sha256.c bitwise_utils.c
+SRCS = main.c parser.c md5.c print_utils.c sha256.c bitwise_utils.c sha224.c
 PATH_SRCS = ./srcs/
 PATH_OBJS = ./srcs/objs/
 PATH_DEPS = ./srcs/objs/

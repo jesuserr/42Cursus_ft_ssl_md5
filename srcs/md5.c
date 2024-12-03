@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 15:25:44 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/03 12:27:47 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/03 14:55:29 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ static void	print_md5_digest(t_md5_data *ssl_data)
 	i = 0;
 	if (!ssl_data->args->quiet_mode)
 		ft_printf("MD5 (\"%s\") = ", ssl_data->args->input_str);
-	while (i < 4)
+	while (i < MD5_OUTPUT_SIZE / MD5_WORD_SIZE)
 	{
 		byte = (uint8_t *)&(ssl_data->digest[i]);
 		print_hex_byte(byte[0]);

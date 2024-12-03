@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 15:25:42 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/03 11:04:44 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/03 14:54:11 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 */
 # define MD5_BLOCK			64			// Size in bytes (512 bits)
 # define MD5_WORD_SIZE		4			// Size in bytes (32 bits)
+# define MD5_OUTPUT_SIZE	16			// Size in bytes (128 bits)
 
 /*
 ** -.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-
