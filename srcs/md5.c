@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 15:25:44 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/03 11:04:35 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/03 12:27:47 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,8 @@ static void	print_md5_digest(t_md5_data *ssl_data)
 	uint8_t	*byte;
 
 	i = 0;
-	ft_printf("MD5 (\"%s\") = ", ssl_data->args->input_str);
+	if (!ssl_data->args->quiet_mode)
+		ft_printf("MD5 (\"%s\") = ", ssl_data->args->input_str);
 	while (i < 4)
 	{
 		byte = (uint8_t *)&(ssl_data->digest[i]);
@@ -80,6 +81,8 @@ static void	print_md5_digest(t_md5_data *ssl_data)
 		print_hex_byte(byte[3]);
 		i++;
 	}
+	if (!ssl_data->args->quiet_mode && ssl_data->args->reverse_output)
+		ft_printf(" \"%s\"", ssl_data->args->input_str);
 	ft_printf("\n");
 }
 

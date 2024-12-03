@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:00:42 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/03 11:00:07 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/03 12:27:21 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,8 @@ static void	print_sha256_digest(t_sha256_data *ssl_data)
 	uint8_t	*byte;
 
 	i = 0;
-	ft_printf("SHA256 (\"%s\") = ", ssl_data->args->input_str);
+	if (!ssl_data->args->quiet_mode && !ssl_data->args->reverse_output)
+		ft_printf("SHA256 (\"%s\") = ", ssl_data->args->input_str);
 	while (i < 8)
 	{
 		byte = (uint8_t *)&(ssl_data->digest[i]);
@@ -113,6 +114,8 @@ static void	print_sha256_digest(t_sha256_data *ssl_data)
 			print_hex_byte(byte[j]);
 		i++;
 	}
+	if (!ssl_data->args->quiet_mode && ssl_data->args->reverse_output)
+		ft_printf(" \"%s\"", ssl_data->args->input_str);
 	ft_printf("\n");
 }
 
