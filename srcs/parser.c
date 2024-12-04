@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 17:12:02 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/03 20:20:35 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/04 20:02:17 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static void	print_usage(void)
 	ft_printf("Usage\n"
 		"  ./ft_ssl command [flags] <file/string>\n\n"
 		"Options:\n"
-		"  command     \"md5\" or \"sha256\"\n"
+		"  command     \"md5\", \"sha224\", \"sha256\" or \"sha512\"\n"
 		"  -h or -?    print help and exit\n"
 		"  -p          echo STDIN to STDOUT and append the checksum to STDOUT\n"
 		"  -q          quiet mode\n"
@@ -50,6 +50,20 @@ static void	parse_options(int opt, t_arguments *args)
 	}
 }
 
+void	parse_hash_function(t_arguments *args, char *hash)
+{
+	if (!ft_strncmp(hash, "md5", 3) && ft_strlen(hash) == 3)
+		args->hash_function = 0;
+	else if (!ft_strncmp(hash, "sha224", 6) && ft_strlen(hash) == 6)
+		args->hash_function = 1;
+	else if (!ft_strncmp(hash, "sha256", 6) && ft_strlen(hash) == 6)
+		args->hash_function = 2;
+	else if (!ft_strncmp(hash, "sha512", 6) && ft_strlen(hash) == 6)
+		args->hash_function = 3;
+	else
+		print_error_and_exit("Incorrect hash function");
+}
+
 // Not final version, needs more testing
 void	parse_arguments(int argc, char **argv, t_arguments *args)
 {
@@ -63,7 +77,5 @@ void	parse_arguments(int argc, char **argv, t_arguments *args)
 	}
 	if (optind >= argc)
 		print_error_and_exit("Hash function required");
-	args->hash_function = argv[optind];
-	if (optind + 1 < argc)
-		args->input_file = argv[optind + 1];
+	parse_hash_function(args, argv[optind]);
 }

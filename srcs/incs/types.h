@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 15:31:27 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/11/28 20:11:12 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/04 19:35:33 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 */
 typedef struct s_arguments
 {
-	char		*hash_function;
+	uint8_t		hash_function;
 	char		*input_str;
 	char		*input_file;
 	bool		echo_stdin;
