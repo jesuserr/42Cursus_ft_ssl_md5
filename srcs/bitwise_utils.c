@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 10:40:34 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/03 20:20:18 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/04 11:22:38 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,4 +46,12 @@ void	modify_endianness_64_bits(uint64_t *nbr)
 			((*nbr << 24) & 0x0000FF0000000000) | \
 			((*nbr << 40) & 0x00FF000000000000) | \
 			((*nbr << 56) & 0xFF00000000000000);
+}
+
+// Rotate 64-bit number to the right by given number of bits (circular shift)
+uint64_t	right_rotation_64(uint64_t nbr, int8_t bits)
+{
+	if (bits > 0 && bits < 64)
+		nbr = nbr >> bits | nbr << (64 - bits);
+	return (nbr);
 }

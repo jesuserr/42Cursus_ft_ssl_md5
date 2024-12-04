@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 17:11:34 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/03 20:20:59 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/04 12:25:42 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,15 @@
 */
 # include "../../libft/includes/libft.h"		// libft library
 # include "../../libft/includes/ft_printf.h"	// for ft_printf
-# include <stdint.h>						// for fixed-width integer types
-# include "types.h"							// for t_arguments
-# include "md5.h"							// for MD5 hash function
-# include "sha256.h"						// for SHA256 hash function
-# include "sha224.h"						// for SHA224 hash function
-# include <string.h>						// for strerror
-# include <fcntl.h>							// for open
-# include <errno.h>							// for errno
+# include <stdint.h>						    // for fixed-width integer types
+# include "types.h"							    // for t_arguments
+# include "md5.h"							    // for MD5 hash function
+# include "sha256.h"						    // for SHA256 hash function
+# include "sha224.h"						    // for SHA224 hash function
+# include "sha512.h"						    // for SHA512 hash function
+# include <string.h>						    // for strerror
+# include <fcntl.h>							    // for open
+# include <errno.h>							    // for errno
 # include <bits/getopt_core.h>	// Delete, just to fix intellisense vscode error
 
 /*
@@ -52,6 +53,7 @@ uint32_t	right_rotation(uint32_t nbr, int8_t bits);
 uint32_t	left_rotation(uint32_t nbr, int8_t bits);
 void		modify_endianness_32_bits(uint32_t *nbr);
 void		modify_endianness_64_bits(uint64_t *nbr);
+uint64_t	right_rotation_64(uint64_t nbr, int8_t bits);
 
 /********************************** print_utils.c *****************************/
 void		print_hex_byte(uint8_t byte);

@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 17:12:21 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/03 20:20:25 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/04 10:11:51 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,6 @@ int	main(int argc, char **argv)
 		print_error_and_exit("Hash function required");
 	ft_bzero(&args, sizeof(t_arguments));
 	parse_arguments(argc, argv, &args);
-	sha256_sum(&args);
+	sha512_sum(&args);
 	return (EXIT_SUCCESS);
 }
