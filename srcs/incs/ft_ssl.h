@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 17:11:34 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/04 12:25:42 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/05 08:50:58 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 # include "md5.h"							    // for MD5 hash function
 # include "sha256.h"						    // for SHA256 hash function
 # include "sha224.h"						    // for SHA224 hash function
+# include "sha384.h"						    // for SHA384 hash function
 # include "sha512.h"						    // for SHA512 hash function
 # include <string.h>						    // for strerror
 # include <fcntl.h>							    // for open

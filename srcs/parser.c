@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 17:12:02 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/04 20:02:17 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/05 09:24:29 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@ static void	print_usage(void)
 	ft_printf("Usage\n"
 		"  ./ft_ssl command [flags] <file/string>\n\n"
 		"Options:\n"
-		"  command     \"md5\", \"sha224\", \"sha256\" or \"sha512\"\n"
-		"  -h or -?    print help and exit\n"
+		"  command     md5, sha224, sha256, sha384 or sha512\n"
+		"  -h          print help and exit\n"
 		"  -p          echo STDIN to STDOUT and append the checksum to STDOUT\n"
 		"  -q          quiet mode\n"
 		"  -r          reverse the format of the output\n"
@@ -29,13 +29,13 @@ static void	print_usage(void)
 void	print_error_and_exit(char *str)
 {
 	ft_printf("ft_ssl: usage error: %s\n", str);
-	ft_printf("Try 'ft_ssl -h' or 'ft_ssl -?' for more information.\n");
+	ft_printf("Try 'ft_ssl -h' for more information.\n");
 	exit (EXIT_FAILURE);
 }
 
 static void	parse_options(int opt, t_arguments *args)
 {
-	if (opt == 'h' || opt == '?')
+	if (opt == 'h')
 		print_usage();
 	else if (opt == 'p')
 		args->echo_stdin = true;
@@ -58,8 +58,10 @@ void	parse_hash_function(t_arguments *args, char *hash)
 		args->hash_function = 1;
 	else if (!ft_strncmp(hash, "sha256", 6) && ft_strlen(hash) == 6)
 		args->hash_function = 2;
-	else if (!ft_strncmp(hash, "sha512", 6) && ft_strlen(hash) == 6)
+	else if (!ft_strncmp(hash, "sha384", 6) && ft_strlen(hash) == 6)
 		args->hash_function = 3;
+	else if (!ft_strncmp(hash, "sha512", 6) && ft_strlen(hash) == 6)
+		args->hash_function = 4;
 	else
 		print_error_and_exit("Incorrect hash function");
 }
@@ -69,11 +71,11 @@ void	parse_arguments(int argc, char **argv, t_arguments *args)
 {
 	int		opt;
 
-	opt = getopt(argc, argv, "h?pqrs:");
+	opt = getopt(argc, argv, "hpqrs:");
 	while (opt != -1)
 	{
 		parse_options(opt, args);
-		opt = getopt(argc, argv, "h?pqrs:");
+		opt = getopt(argc, argv, "hpqrs:");
 	}
 	if (optind >= argc)
 		print_error_and_exit("Hash function required");
