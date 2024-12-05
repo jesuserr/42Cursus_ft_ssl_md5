@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 17:12:02 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/05 09:24:29 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/05 13:32:39 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,13 +26,6 @@ static void	print_usage(void)
 	exit(EXIT_SUCCESS);
 }
 
-void	print_error_and_exit(char *str)
-{
-	ft_printf("ft_ssl: usage error: %s\n", str);
-	ft_printf("Try 'ft_ssl -h' for more information.\n");
-	exit (EXIT_FAILURE);
-}
-
 static void	parse_options(int opt, t_arguments *args)
 {
 	if (opt == 'h')
@@ -50,7 +43,7 @@ static void	parse_options(int opt, t_arguments *args)
 	}
 }
 
-void	parse_hash_function(t_arguments *args, char *hash)
+static void	parse_hash_function(t_arguments *args, char *hash)
 {
 	if (!ft_strncmp(hash, "md5", 3) && ft_strlen(hash) == 3)
 		args->hash_function = 0;
@@ -66,11 +59,27 @@ void	parse_hash_function(t_arguments *args, char *hash)
 		print_error_and_exit("Incorrect hash function");
 }
 
+static void	parse_pipe(t_arguments *args)
+{
+	char		buffer[BUFFER_SIZE];
+	ssize_t		bytes_read;
+
+	if (isatty(STDIN_FILENO) == 0)
+	{
+		bytes_read = read(STDIN_FILENO, buffer, BUFFER_SIZE - 1);
+		if (bytes_read < 0 || bytes_read >= BUFFER_SIZE - 1)
+			print_error_and_exit("Error reading from pipe");
+		buffer[bytes_read] = '\0';
+		args->input_pipe = ft_strdup(buffer);
+	}
+}
+
 // Not final version, needs more testing
 void	parse_arguments(int argc, char **argv, t_arguments *args)
 {
 	int		opt;
 
+	parse_pipe(args);
 	opt = getopt(argc, argv, "hpqrs:");
 	while (opt != -1)
 	{

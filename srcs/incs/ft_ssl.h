@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 17:11:34 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/05 08:50:58 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/05 13:25:29 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@
 ** -.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-
 **                              DEFINES
 */
+# define BUFFER_SIZE		1048576             // buffer size for pipe reading
 
 /*
 ** -.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-
@@ -46,7 +47,6 @@
 **                        FUNCTION PROTOTYPES
 */
 /********************************** parser.c **********************************/
-void		print_error_and_exit(char *str);
 void		parse_arguments(int argc, char **argv, t_arguments *args);
 
 /********************************** bitwise_utils.c ***************************/
@@ -58,6 +58,7 @@ uint64_t	right_rotation_64(uint64_t nbr, int8_t bits);
 
 /********************************** print_utils.c *****************************/
 void		print_hex_byte(uint8_t byte);
-void		print_strerror_and_exit(char *msg, int fd);
+void		print_strerror_and_exit(char *msg, t_arguments *args);
+void		print_error_and_exit(char *str);
 
 #endif

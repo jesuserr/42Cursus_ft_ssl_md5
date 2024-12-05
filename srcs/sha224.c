@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 14:33:08 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/03 20:20:41 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/05 12:53:21 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static void	create_padded_message(t_sha224_data *ssl_data)
 	uint64_t	len;
 	uint64_t	len_bits;
 
-	len = ft_strlen(ssl_data->args->input_str);
+	len = ft_strlen(ssl_data->args->message);
 	ssl_data->msg_len = len;
 	if (len % SHA224_BLOCK < SHA224_BLOCK - 8 && len % SHA224_BLOCK != 0)
 		len = (len + SHA224_BLOCK - 1) & ~(SHA224_BLOCK - 1);
@@ -29,8 +29,8 @@ static void	create_padded_message(t_sha224_data *ssl_data)
 	ssl_data->pad_len = len;
 	ssl_data->pad_msg = ft_calloc(ssl_data->pad_len, sizeof(uint8_t));
 	if (!ssl_data->pad_msg)
-		print_strerror_and_exit("ft_calloc", ssl_data->args->fd);
-	ft_memcpy(ssl_data->pad_msg, ssl_data->args->input_str, ssl_data->msg_len);
+		print_strerror_and_exit("ft_calloc", ssl_data->args);
+	ft_memcpy(ssl_data->pad_msg, ssl_data->args->message, ssl_data->msg_len);
 	ssl_data->pad_msg[ssl_data->msg_len] = (uint8_t)0x80;
 	len_bits = ssl_data->msg_len * 8;
 	modify_endianness_64_bits(&len_bits);
@@ -105,7 +105,7 @@ static void	print_sha224_digest(t_sha224_data *ssl_data)
 
 	i = 0;
 	if (!ssl_data->args->quiet_mode && !ssl_data->args->reverse_output)
-		ft_printf("SHA224 (\"%s\") = ", ssl_data->args->input_str);
+		ft_printf("SHA224 (\"%s\") = ", ssl_data->args->message);
 	while (i < SHA224_OUTPUT_SIZE / SHA224_WORD_SIZE)
 	{
 		byte = (uint8_t *)&(ssl_data->digest[i]);
@@ -116,7 +116,7 @@ static void	print_sha224_digest(t_sha224_data *ssl_data)
 		i++;
 	}
 	if (!ssl_data->args->quiet_mode && ssl_data->args->reverse_output)
-		ft_printf(" \"%s\"", ssl_data->args->input_str);
+		ft_printf(" \"%s\"", ssl_data->args->message);
 	ft_printf("\n");
 }
 

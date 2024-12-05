@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 15:25:44 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/03 20:20:30 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/05 13:07:37 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static void	create_padded_message(t_md5_data *ssl_data)
 	uint64_t	len;
 	uint64_t	len_bits;
 
-	len = ft_strlen(ssl_data->args->input_str);
+	len = ft_strlen(ssl_data->args->message);
 	ssl_data->msg_len = len;
 	if (len % MD5_BLOCK < MD5_BLOCK - 8 && len % MD5_BLOCK != 0)
 		len = (len + MD5_BLOCK - 1) & ~(MD5_BLOCK - 1);
@@ -29,8 +29,8 @@ static void	create_padded_message(t_md5_data *ssl_data)
 	ssl_data->pad_len = len;
 	ssl_data->pad_msg = ft_calloc(ssl_data->pad_len, sizeof(uint8_t));
 	if (!ssl_data->pad_msg)
-		print_strerror_and_exit("ft_calloc", ssl_data->args->fd);
-	ft_memcpy(ssl_data->pad_msg, ssl_data->args->input_str, ssl_data->msg_len);
+		print_strerror_and_exit("ft_calloc", ssl_data->args);
+	ft_memcpy(ssl_data->pad_msg, ssl_data->args->message, ssl_data->msg_len);
 	ssl_data->pad_msg[ssl_data->msg_len] = (uint8_t)0x80;
 	len_bits = ssl_data->msg_len * 8;
 	ft_memcpy(ssl_data->pad_msg + ssl_data->pad_len - 8, &len_bits, 8);
@@ -70,8 +70,8 @@ static void	print_md5_digest(t_md5_data *ssl_data)
 	uint8_t	*byte;
 
 	i = 0;
-	if (!ssl_data->args->quiet_mode)
-		ft_printf("MD5 (\"%s\") = ", ssl_data->args->input_str);
+	if (!ssl_data->args->quiet_mode && !ssl_data->args->reverse_output)
+		ft_printf("MD5 (\"%s\") = ", ssl_data->args->message);
 	while (i < MD5_OUTPUT_SIZE / MD5_WORD_SIZE)
 	{
 		byte = (uint8_t *)&(ssl_data->digest[i]);
@@ -82,7 +82,7 @@ static void	print_md5_digest(t_md5_data *ssl_data)
 		i++;
 	}
 	if (!ssl_data->args->quiet_mode && ssl_data->args->reverse_output)
-		ft_printf(" \"%s\"", ssl_data->args->input_str);
+		ft_printf(" \"%s\"", ssl_data->args->message);
 	ft_printf("\n");
 }
 
