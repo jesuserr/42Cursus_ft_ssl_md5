@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 08:51:27 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/05 12:53:21 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/05 20:49:22 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,24 +99,17 @@ static void	compression_function(t_sha384_data *ssl_data, uint8_t i)
 	state[A] = tmp1 + tmp2;
 }
 
-// Print the digest in hexadecimal format.
+// Print the digest in hexadecimal format. 'ssl_data.digest[G]' and 
+// 'ssl_data.digest[H]' are omitted because are not part of the SHA384 digest.
 static void	print_sha384_digest(t_sha384_data *ssl_data)
 {
 	uint8_t	i;
-	int8_t	j;
-	uint8_t	*byte;
 
 	i = 0;
 	if (!ssl_data->args->quiet_mode && !ssl_data->args->reverse_output)
 		ft_printf("SHA384 (\"%s\") = ", ssl_data->args->message);
 	while (i < SHA384_OUTPUT_SIZE / SHA384_WORD_SIZE)
-	{
-		byte = (uint8_t *)&(ssl_data->digest[i]);
-		j = 7;
-		while (j >= 0)
-			print_hex_byte(byte[j--]);
-		i++;
-	}
+		print_hex_bytes((uint8_t *)&(ssl_data->digest[i++]), 7, 0);
 	if (!ssl_data->args->quiet_mode && ssl_data->args->reverse_output)
 		ft_printf(" \"%s\"", ssl_data->args->message);
 	ft_printf("\n");

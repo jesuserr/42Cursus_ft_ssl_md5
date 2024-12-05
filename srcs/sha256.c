@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 19:00:42 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/05 12:53:21 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/05 20:41:19 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,20 +100,12 @@ static void	compression_function(t_sha256_data *ssl_data, uint8_t i)
 static void	print_sha256_digest(t_sha256_data *ssl_data)
 {
 	uint8_t	i;
-	uint8_t	*byte;
 
 	i = 0;
 	if (!ssl_data->args->quiet_mode && !ssl_data->args->reverse_output)
 		ft_printf("SHA256 (\"%s\") = ", ssl_data->args->message);
 	while (i < SHA256_OUTPUT_SIZE / SHA256_WORD_SIZE)
-	{
-		byte = (uint8_t *)&(ssl_data->digest[i]);
-		print_hex_byte(byte[3]);
-		print_hex_byte(byte[2]);
-		print_hex_byte(byte[1]);
-		print_hex_byte(byte[0]);
-		i++;
-	}
+		print_hex_bytes((uint8_t *)&(ssl_data->digest[i++]), 3, 0);
 	if (!ssl_data->args->quiet_mode && ssl_data->args->reverse_output)
 		ft_printf(" \"%s\"", ssl_data->args->message);
 	ft_printf("\n");
