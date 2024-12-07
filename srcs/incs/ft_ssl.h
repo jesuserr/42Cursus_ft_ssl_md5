@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 17:11:34 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/05 22:03:10 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/07 21:12:09 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@
 # include <string.h>						    // for strerror
 # include <fcntl.h>							    // for open
 # include <errno.h>							    // for errno
+# include <sys/stat.h>                          // for fstat
+# include <sys/mman.h>                          // for mmap/munmap
 # include <bits/getopt_core.h>	// Delete, just to fix intellisense vscode error
 
 /*
@@ -36,11 +38,6 @@
 **                              DEFINES
 */
 # define BUFFER_SIZE		1048576             // buffer size for pipe reading
-
-/*
-** -.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-
-**                              STRUCTS
-*/
 
 /*
 ** -.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-
@@ -57,6 +54,7 @@ void		modify_endianness_64_bits(uint64_t *nbr);
 uint64_t	right_rotation_64(uint64_t nbr, int8_t bits);
 
 /********************************** print_utils.c *****************************/
+void		print_usage(void);
 void		print_hex_bytes(uint8_t *byte, uint8_t start, uint8_t end);
 void		print_strerror_and_exit(char *msg, t_arguments *args);
 void		print_error_and_exit(char *str);

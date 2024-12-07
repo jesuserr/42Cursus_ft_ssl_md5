@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 14:33:08 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/05 20:49:42 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/07 22:16:45 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,10 @@ static void	create_padded_message(t_sha224_data *ssl_data)
 	uint64_t	len;
 	uint64_t	len_bits;
 
-	len = ft_strlen(ssl_data->args->message);
+	if (ssl_data->args->msg_origin == IS_FILE)
+		len = ssl_data->args->file_size;
+	else
+		len = ft_strlen(ssl_data->args->message);
 	ssl_data->msg_len = len;
 	if (len % SHA224_BLOCK < SHA224_BLOCK - 8 && len % SHA224_BLOCK != 0)
 		len = (len + SHA224_BLOCK - 1) & ~(SHA224_BLOCK - 1);

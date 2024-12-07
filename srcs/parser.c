@@ -6,25 +6,11 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 17:12:02 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/05 13:32:39 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/07 22:24:10 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "incs/ft_ssl.h"
-
-static void	print_usage(void)
-{
-	ft_printf("Usage\n"
-		"  ./ft_ssl command [flags] <file/string>\n\n"
-		"Options:\n"
-		"  command     md5, sha224, sha256, sha384 or sha512\n"
-		"  -h          print help and exit\n"
-		"  -p          echo STDIN to STDOUT and append the checksum to STDOUT\n"
-		"  -q          quiet mode\n"
-		"  -r          reverse the format of the output\n"
-		"  -s          print the sum of the given string\n");
-	exit(EXIT_SUCCESS);
-}
 
 static void	parse_options(int opt, t_arguments *args)
 {
@@ -74,6 +60,34 @@ static void	parse_pipe(t_arguments *args)
 	}
 }
 
+// Uses 'mmap' to map the entire file into memory in one shot. Way more 
+// efficient than reading the file multiple times. File size is kept for the
+// hash functions to know how many bytes to read (specially for binary files)
+// and also for the 'munmap' function to know how many bytes to unmap when the
+// program finishes.
+void	parse_file_content(t_arguments *args, char *file_name)
+{
+	int			fd;
+	struct stat	file_stat;
+	void		*file_content;
+
+	fd = open(file_name, O_RDONLY);
+	if (fd < 0)
+		print_strerror_and_exit(file_name, args);
+	if (fstat(fd, &file_stat) < 0)
+		print_strerror_and_exit(file_name, args);
+	file_content = mmap(NULL, file_stat.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
+	if (file_content == MAP_FAILED)
+	{
+		close(fd);
+		print_strerror_and_exit("mmap", args);
+	}
+	close(fd);
+	args->input_file = (char *)file_content;
+	args->file_size = file_stat.st_size;
+	args->file_name = file_name;
+}
+
 // Not final version, needs more testing
 void	parse_arguments(int argc, char **argv, t_arguments *args)
 {
@@ -89,4 +103,8 @@ void	parse_arguments(int argc, char **argv, t_arguments *args)
 	if (optind >= argc)
 		print_error_and_exit("Hash function required");
 	parse_hash_function(args, argv[optind]);
+	if (optind + 1 < argc)
+		parse_file_content(args, argv[optind + 1]);
+	if (optind + 2 < argc)
+		print_error_and_exit("Too many arguments");
 }

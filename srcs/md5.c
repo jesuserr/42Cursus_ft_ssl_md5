@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 15:25:44 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/07 13:28:12 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/07 22:16:45 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,10 @@ static void	create_padded_message(t_md5_data *ssl_data)
 	uint64_t	len;
 	uint64_t	len_bits;
 
-	len = ft_strlen(ssl_data->args->message);
+	if (ssl_data->args->msg_origin == IS_FILE)
+		len = ssl_data->args->file_size;
+	else
+		len = ft_strlen(ssl_data->args->message);
 	ssl_data->msg_len = len;
 	if (len % MD5_BLOCK < MD5_BLOCK - 8 && len % MD5_BLOCK != 0)
 		len = (len + MD5_BLOCK - 1) & ~(MD5_BLOCK - 1);

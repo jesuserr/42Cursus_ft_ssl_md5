@@ -6,11 +6,25 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 22:21:30 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/05 22:03:24 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/07 22:40:22 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "incs/ft_ssl.h"
+
+void	print_usage(void)
+{
+	ft_printf("Usage\n"
+		"  ./ft_ssl <command> [flags] [file]\n\n"
+		"Options:\n"
+		"  command     md5, sha224, sha256, sha384 or sha512\n"
+		"  -h          print help and exit\n"
+		"  -p          echo STDIN to STDOUT and append the checksum to STDOUT\n"
+		"  -q          quiet mode\n"
+		"  -r          reverse the format of the output\n"
+		"  -s <string> print the sum of the given string\n");
+	exit(EXIT_SUCCESS);
+}
 
 // Prints given array of bytes in hexadecimal format. Depending on the 'start'
 // and 'end' values, it prints the array in ascending or descending order to
@@ -40,15 +54,15 @@ void	print_hex_bytes(uint8_t *byte, uint8_t start, uint8_t end)
 	}
 }
 
-// Prints system error message, closes open sockets and releases allocated
-// memory. Then exits with EXIT_FAILURE status.
+// Prints system error message, releases allocated memory and exits with 
+// EXIT_FAILURE status.
 void	print_strerror_and_exit(char *msg, t_arguments *args)
 {
 	ft_printf("%s: %s\n", msg, strerror(errno));
-	if (args->fd > 0)
-		close(args->fd);
 	if (args->input_pipe)
 		free(args->input_pipe);
+	if (args->input_file)
+		munmap(args->input_file, args->file_size);
 	exit(EXIT_FAILURE);
 }
 
