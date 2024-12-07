@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 22:21:30 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/05 20:52:53 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/05 22:03:24 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,4 +57,17 @@ void	print_error_and_exit(char *str)
 	ft_printf("ft_ssl: usage error: %s\n", str);
 	ft_printf("Try 'ft_ssl -h' for more information.\n");
 	exit (EXIT_FAILURE);
+}
+
+// Removes the newline character from the end of the string if it has been 
+// introduced by the 'echo' command when reading from stdin (pipe).
+// Modified only for printing purposes, for hashing purposes the message with
+// the newline character is used.
+void	remove_newline_character(char *str)
+{
+	size_t	len;
+
+	len = ft_strlen(str);
+	if (str[len - 1] == '\n')
+		str[len - 1] = '\0';
 }

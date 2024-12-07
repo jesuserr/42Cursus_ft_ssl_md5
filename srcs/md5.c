@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 15:25:44 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/05 20:41:19 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/07 13:28:12 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,18 +63,35 @@ static void	block_calculations(t_md5_data *ssl_data, uint8_t i, uint64_t j)
 	ssl_data->state[B] = tmp_b;
 }
 
-// Print the digest in hexadecimal format.
-static void	print_md5_digest(t_md5_data *ssl_data)
+// Print the digest in hexadecimal format in accordance with the combination of
+// flags provided in the arguments. Although arguments are already inside 
+// ssl_data, they are passed as a parameter to make the function more readable.
+static void	print_md5_digest(t_md5_data *ssl_data, t_arguments *args)
 {
 	uint8_t	i;
 
 	i = 0;
-	if (!ssl_data->args->quiet_mode && !ssl_data->args->reverse_output)
-		ft_printf("MD5 (\"%s\") = ", ssl_data->args->message);
+	if (args->msg_origin == IS_PIPE)
+		remove_newline_character(args->message);
+	if (args->quiet_mode)
+	{
+		if (args->echo_stdin && args->msg_origin == IS_PIPE)
+			ft_printf("%s\n", args->message);
+		while (i < MD5_OUTPUT_SIZE / MD5_WORD_SIZE)
+			print_hex_bytes((uint8_t *)&(ssl_data->digest[i++]), 0, 3);
+		ft_printf("\n");
+		return ;
+	}
+	if (args->msg_origin == IS_PIPE && !args->echo_stdin)
+		ft_printf("(stdin)= ");
+	else if (args->msg_origin == IS_PIPE && args->echo_stdin)
+		ft_printf("(\"%s\")= ", args->message);
+	else if (args->msg_origin == IS_STRING && !args->reverse_output)
+		ft_printf("MD5 (\"%s\") = ", args->message);
 	while (i < MD5_OUTPUT_SIZE / MD5_WORD_SIZE)
 		print_hex_bytes((uint8_t *)&(ssl_data->digest[i++]), 0, 3);
-	if (!ssl_data->args->quiet_mode && ssl_data->args->reverse_output)
-		ft_printf(" \"%s\"", ssl_data->args->message);
+	if (args->reverse_output && args->msg_origin == IS_STRING)
+		ft_printf(" \"%s\"", args->message);
 	ft_printf("\n");
 }
 
@@ -101,6 +118,6 @@ void	md5_sum(t_arguments *args)
 		ssl_data.digest[D] = ssl_data.digest[D] + ssl_data.state[D];
 		j++;
 	}
-	print_md5_digest(&ssl_data);
+	print_md5_digest(&ssl_data, args);
 	free(ssl_data.pad_msg);
 }
