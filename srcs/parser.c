@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 17:12:02 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/07 22:24:10 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/08 21:11:08 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,11 @@ static void	parse_options(int opt, t_arguments *args)
 	{
 		args->print_sum = true;
 		args->input_str = optarg;
+	}
+	else if (opt == 's' && args->print_sum == true)
+	{
+		ft_printf("ft_ssl: %s: %s\n", "-s", "No such file or directory");
+		ft_printf("ft_ssl: %s: %s\n", optarg, "No such file or directory");
 	}
 }
 
@@ -100,9 +105,9 @@ void	parse_arguments(int argc, char **argv, t_arguments *args)
 		parse_options(opt, args);
 		opt = getopt(argc, argv, "hpqrs:");
 	}
-	if (optind >= argc)
-		print_error_and_exit("Hash function required");
 	parse_hash_function(args, argv[optind]);
+	if (!argv[optind + 1] && !args->input_str && !args->input_pipe)
+		print_error_and_exit("Missing arguments");
 	if (optind + 1 < argc)
 		parse_file_content(args, argv[optind + 1]);
 	if (optind + 2 < argc)
