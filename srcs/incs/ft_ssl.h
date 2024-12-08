@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 17:11:34 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/07 21:12:09 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/08 13:21:28 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,9 @@
 ** -.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-
 **                        FUNCTION PROTOTYPES
 */
+/********************************** main.c ************************************/
+void		print_usage(void);
+
 /********************************** parser.c **********************************/
 void		parse_arguments(int argc, char **argv, t_arguments *args);
 
@@ -54,10 +57,10 @@ void		modify_endianness_64_bits(uint64_t *nbr);
 uint64_t	right_rotation_64(uint64_t nbr, int8_t bits);
 
 /********************************** print_utils.c *****************************/
-void		print_usage(void);
 void		print_hex_bytes(uint8_t *byte, uint8_t start, uint8_t end);
 void		print_strerror_and_exit(char *msg, t_arguments *args);
 void		print_error_and_exit(char *str);
 void		remove_newline_character(char *str);
+void		print_prehash_output(char *algorithm, t_arguments *args);
 
 #endif

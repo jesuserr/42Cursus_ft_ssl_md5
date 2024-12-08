@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 15:25:44 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/07 22:16:45 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/08 13:20:51 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,8 @@ static void	print_md5_digest(t_md5_data *ssl_data, t_arguments *args)
 	i = 0;
 	if (args->msg_origin == IS_PIPE)
 		remove_newline_character(args->message);
+	if (args->msg_origin == IS_PIPE && !args->echo_stdin && args->input_file)
+		return ;
 	if (args->quiet_mode)
 	{
 		if (args->echo_stdin && args->msg_origin == IS_PIPE)
@@ -85,16 +87,13 @@ static void	print_md5_digest(t_md5_data *ssl_data, t_arguments *args)
 		ft_printf("\n");
 		return ;
 	}
-	if (args->msg_origin == IS_PIPE && !args->echo_stdin)
-		ft_printf("(stdin)= ");
-	else if (args->msg_origin == IS_PIPE && args->echo_stdin)
-		ft_printf("(\"%s\")= ", args->message);
-	else if (args->msg_origin == IS_STRING && !args->reverse_output)
-		ft_printf("MD5 (\"%s\") = ", args->message);
+	print_prehash_output("MD5", args);
 	while (i < MD5_OUTPUT_SIZE / MD5_WORD_SIZE)
 		print_hex_bytes((uint8_t *)&(ssl_data->digest[i++]), 0, 3);
 	if (args->reverse_output && args->msg_origin == IS_STRING)
 		ft_printf(" \"%s\"", args->message);
+	else if (args->reverse_output && args->msg_origin == IS_FILE)
+		ft_printf(" %s", args->file_name);
 	ft_printf("\n");
 }
 

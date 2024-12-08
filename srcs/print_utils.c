@@ -6,25 +6,11 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 22:21:30 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/07 22:40:22 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/08 13:21:09 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "incs/ft_ssl.h"
-
-void	print_usage(void)
-{
-	ft_printf("Usage\n"
-		"  ./ft_ssl <command> [flags] [file]\n\n"
-		"Options:\n"
-		"  command     md5, sha224, sha256, sha384 or sha512\n"
-		"  -h          print help and exit\n"
-		"  -p          echo STDIN to STDOUT and append the checksum to STDOUT\n"
-		"  -q          quiet mode\n"
-		"  -r          reverse the format of the output\n"
-		"  -s <string> print the sum of the given string\n");
-	exit(EXIT_SUCCESS);
-}
 
 // Prints given array of bytes in hexadecimal format. Depending on the 'start'
 // and 'end' values, it prints the array in ascending or descending order to
@@ -84,4 +70,17 @@ void	remove_newline_character(char *str)
 	len = ft_strlen(str);
 	if (str[len - 1] == '\n')
 		str[len - 1] = '\0';
+}
+
+// Auxilary function for print_xxx_digest that is common to all hash functions.
+void	print_prehash_output(char *algorithm, t_arguments *args)
+{
+	if (args->msg_origin == IS_PIPE && !args->echo_stdin)
+		ft_printf("(stdin)= ");
+	else if (args->msg_origin == IS_PIPE && args->echo_stdin)
+		ft_printf("(\"%s\")= ", args->message);
+	else if (args->msg_origin == IS_STRING && !args->reverse_output)
+		ft_printf("%s (\"%s\") = ", algorithm, args->message);
+	else if (args->msg_origin == IS_FILE && !args->reverse_output)
+		ft_printf("%s (%s) = ", algorithm, args->file_name);
 }
