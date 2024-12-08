@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 14:33:08 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/07 22:16:45 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/08 13:32:36 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,19 +99,35 @@ static void	compression_function(t_sha224_data *ssl_data, uint8_t i)
 	state[A] = tmp1 + tmp2;
 }
 
-// Print the digest in hexadecimal format. 'ssl_data.digest[H]' is omitted 
-// because is not part of the SHA224 digest.
-static void	print_sha224_digest(t_sha224_data *ssl_data)
+// Print the digest in hexadecimal format in accordance with the combination of
+// flags provided in the arguments. Although arguments are already inside 
+// ssl_data, they are passed as a parameter to make the function more readable.
+// 'ssl_data.digest[H]' is omitted because is not part of the SHA224 digest.
+static void	print_sha224_digest(t_sha224_data *ssl_data, t_arguments *args)
 {
 	uint8_t	i;
 
 	i = 0;
-	if (!ssl_data->args->quiet_mode && !ssl_data->args->reverse_output)
-		ft_printf("SHA224 (\"%s\") = ", ssl_data->args->message);
+	if (args->msg_origin == IS_PIPE)
+		remove_newline_character(args->message);
+	if (args->msg_origin == IS_PIPE && !args->echo_stdin && args->input_file)
+		return ;
+	if (args->quiet_mode)
+	{
+		if (args->echo_stdin && args->msg_origin == IS_PIPE)
+			ft_printf("%s\n", args->message);
+		while (i < SHA224_OUTPUT_SIZE / SHA224_WORD_SIZE)
+			print_hex_bytes((uint8_t *)&(ssl_data->digest[i++]), 3, 0);
+		ft_printf("\n");
+		return ;
+	}
+	print_prehash_output("SHA224", args);
 	while (i < SHA224_OUTPUT_SIZE / SHA224_WORD_SIZE)
 		print_hex_bytes((uint8_t *)&(ssl_data->digest[i++]), 3, 0);
-	if (!ssl_data->args->quiet_mode && ssl_data->args->reverse_output)
-		ft_printf(" \"%s\"", ssl_data->args->message);
+	if (args->reverse_output && args->msg_origin == IS_STRING)
+		ft_printf(" \"%s\"", args->message);
+	else if (args->reverse_output && args->msg_origin == IS_FILE)
+		ft_printf(" %s", args->file_name);
 	ft_printf("\n");
 }
 
@@ -141,6 +157,6 @@ void	sha224_sum(t_arguments *args)
 		ssl_data.digest[G] += ssl_data.state[G];
 		ssl_data.digest[H] += ssl_data.state[H];
 	}
-	print_sha224_digest(&ssl_data);
+	print_sha224_digest(&ssl_data, args);
 	free(ssl_data.pad_msg);
 }
