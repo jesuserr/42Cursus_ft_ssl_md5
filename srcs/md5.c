@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 15:25:44 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/09 16:18:33 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/09 22:54:14 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ static void	create_padded_message(t_md5_data *ssl_data)
 
 	if (ssl_data->args->msg_origin == IS_FILE)
 		len = ssl_data->args->file_size;
+	else if (ssl_data->args->msg_origin == IS_PIPE)
+		len = ssl_data->args->pipe_size;
 	else
 		len = ft_strlen(ssl_data->args->message);
 	ssl_data->msg_len = len;
@@ -75,7 +77,7 @@ static void	print_md5_digest(t_md5_data *ssl_data, t_arguments *args)
 
 	i = 0;
 	if (args->msg_origin == IS_PIPE)
-		remove_newline_character(args->message);
+		remove_newline_character(args->message, args->pipe_size);
 	if (args->msg_origin == IS_PIPE && !args->echo_stdin && args->input_file)
 		return ;
 	if (args->quiet_mode)

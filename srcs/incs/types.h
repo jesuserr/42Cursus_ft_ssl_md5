@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 15:31:27 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/07 22:26:48 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/09 22:48:01 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ typedef struct s_arguments
 	char		*message;
 	char		*file_name;
 	uint64_t	file_size;
+	uint64_t	pipe_size;
 	uint8_t		hash_function;
 	uint8_t		msg_origin;
 	bool		echo_stdin;

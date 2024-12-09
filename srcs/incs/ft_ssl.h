@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 17:11:34 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/09 16:05:34 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/09 23:02:09 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,12 +36,6 @@
 
 /*
 ** -.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-
-**                              DEFINES
-*/
-# define BUFFER_SIZE_PIPE		1048576			// buffer size for pipe reading
-
-/*
-** -.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-.-'-
 **                        FUNCTION PROTOTYPES
 */
 /********************************** parser.c **********************************/
@@ -63,6 +57,6 @@ void		print_prehash_output(char *algorithm, t_arguments *args);
 
 /********************************** interactive.c *****************************/
 void		read_interactive_mode(t_arguments *args);
-void		remove_newline_character(char *str);
+void		remove_newline_character(char *msg, uint64_t len);
 
 #endif

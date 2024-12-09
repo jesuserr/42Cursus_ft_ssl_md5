@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 11:09:10 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/09 11:24:42 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/10 00:28:35 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,15 +30,12 @@ void	read_interactive_mode(t_arguments *args)
 	free(input);
 }
 
-// Removes the newline character from the end of the string if it has been 
+// Removes the newline character from the end of the message if it has been 
 // introduced by the 'echo' command when reading from stdin (pipe).
 // Modified only for printing purposes, for hashing purposes the message with
 // the newline character is used.
-void	remove_newline_character(char *str)
+void	remove_newline_character(char *msg, uint64_t len)
 {
-	size_t	len;
-
-	len = ft_strlen(str);
-	if (len > 0 && str[len - 1] == '\n')
-		str[len - 1] = '\0';
+	if (len > 0 && msg[len - 1] == '\n')
+		msg[len - 1] = '\0';
 }

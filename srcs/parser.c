@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 17:12:02 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/09 19:27:15 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/10 00:16:20 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,18 +50,35 @@ static void	parse_hash_function(t_arguments *args, char *hash)
 		print_error_and_exit("Incorrect hash function");
 }
 
+// Function deals with both binary and text files. 'isatty' function is used to
+// check if the input is coming from a pipe. Message is read in chunks of
+// BUFFER_SIZE bytes and with the help of 'realloc' and 'ft_memcpy', the whole
+// message is stored in 'input_pipe'. If the file is empty, the program will not
+// read anything and the input_pipe will be NULL.
 static void	parse_pipe(t_arguments *args)
 {
-	char		buffer[BUFFER_SIZE_PIPE];
+	char		buffer[BUFFER_SIZE];
+	char		*temp;
 	ssize_t		bytes_read;
 
-	if (isatty(STDIN_FILENO) == 0)
+	if (isatty(STDIN_FILENO) != 0)
+		return ;
+	bytes_read = read(STDIN_FILENO, buffer, BUFFER_SIZE);
+	while (bytes_read > 0)
 	{
-		bytes_read = read(STDIN_FILENO, buffer, BUFFER_SIZE_PIPE - 1);
-		if (bytes_read < 0 || bytes_read >= BUFFER_SIZE_PIPE - 1)
-			print_error_and_exit("Error reading from pipe");
-		buffer[bytes_read] = '\0';
-		args->input_pipe = ft_strdup(buffer);
+		temp = realloc(args->input_pipe, args->pipe_size + (size_t)bytes_read);
+		if (!temp)
+			print_strerror_and_exit("realloc", args);
+		args->input_pipe = temp;
+		ft_memcpy(args->input_pipe + args->pipe_size, buffer, \
+		(size_t)bytes_read);
+		args->pipe_size += (size_t)bytes_read;
+		bytes_read = read(STDIN_FILENO, buffer, BUFFER_SIZE);
+	}
+	if (bytes_read < 0)
+	{
+		free(args->input_pipe);
+		print_error_and_exit("Error reading from pipe");
 	}
 }
 
