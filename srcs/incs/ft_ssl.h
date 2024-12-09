@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 17:11:34 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/09 11:20:39 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/09 16:05:34 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,8 @@
 void		parse_arguments(int argc, char **argv, t_arguments *args);
 
 /********************************** bitwise_utils.c ***************************/
-uint32_t	right_rotation(uint32_t nbr, int8_t bits);
-uint32_t	left_rotation(uint32_t nbr, int8_t bits);
+uint32_t	right_rotation(uint32_t nbr, uint8_t bits);
+uint32_t	left_rotation(uint32_t nbr, uint8_t bits);
 void		modify_endianness_32_bits(uint32_t *nbr);
 void		modify_endianness_64_bits(uint64_t *nbr);
 uint64_t	right_rotation_64(uint64_t nbr, int8_t bits);

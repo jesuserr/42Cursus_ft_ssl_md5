@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 10:04:39 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/08 13:35:31 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/09 16:12:59 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ static void	create_padded_message(t_sha512_data *ssl_data)
 	if (!ssl_data->pad_msg)
 		print_strerror_and_exit("ft_calloc", ssl_data->args);
 	ft_memcpy(ssl_data->pad_msg, ssl_data->args->message, ssl_data->msg_len);
-	ssl_data->pad_msg[ssl_data->msg_len] = (uint8_t)0x80;
+	ssl_data->pad_msg[ssl_data->msg_len] = (int8_t)0x80;
 	len_bits = ssl_data->msg_len * 8;
 	modify_endianness_64_bits(&len_bits);
 	ft_memcpy(ssl_data->pad_msg + ssl_data->pad_len - 8, &len_bits, 8);

@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 17:12:02 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/09 11:09:27 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/09 16:08:13 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,8 @@ void	parse_file_content(t_arguments *args, char *file_name)
 		print_strerror_and_exit(file_name, args);
 	if (fstat(fd, &file_stat) < 0)
 		print_strerror_and_exit(file_name, args);
-	file_content = mmap(NULL, file_stat.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
+	file_content = mmap(NULL, (size_t)file_stat.st_size, PROT_READ, \
+	MAP_PRIVATE, fd, 0);
 	if (file_content == MAP_FAILED)
 	{
 		close(fd);
@@ -89,7 +90,7 @@ void	parse_file_content(t_arguments *args, char *file_name)
 	}
 	close(fd);
 	args->input_file = (char *)file_content;
-	args->file_size = file_stat.st_size;
+	args->file_size = (uint64_t)file_stat.st_size;
 	args->file_name = file_name;
 }
 

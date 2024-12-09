@@ -6,14 +6,14 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 10:40:34 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/04 11:22:38 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/09 16:05:21 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "incs/ft_ssl.h"
 
 // Rotate 32-bit number to the right by given number of bits (circular shift)
-uint32_t	right_rotation(uint32_t nbr, int8_t bits)
+uint32_t	right_rotation(uint32_t nbr, uint8_t bits)
 {
 	if (bits > 0 && bits < 32)
 		nbr = nbr >> bits | nbr << (32 - bits);
@@ -21,7 +21,7 @@ uint32_t	right_rotation(uint32_t nbr, int8_t bits)
 }
 
 // Rotate 32-bit number to the left by given number of bits (circular shift)
-uint32_t	left_rotation(uint32_t nbr, int8_t bits)
+uint32_t	left_rotation(uint32_t nbr, uint8_t bits)
 {
 	if (bits > 0 && bits < 32)
 		nbr = nbr << bits | nbr >> (32 - bits);

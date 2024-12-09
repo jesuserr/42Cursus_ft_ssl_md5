@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 17:12:21 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/09 11:16:26 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/09 16:19:39 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,12 @@ static void	calls_to_hashing_function(t_arguments *args)
 {
 	void		(*hash_functions[])(t_arguments *) = \
 				{md5_sum, sha224_sum, sha256_sum, sha384_sum, sha512_sum};
-	char		*msg[3] = {args->input_pipe, args->input_str, args->input_file};
+	char		*msg[3];
 	uint8_t		origin;
 
+	msg[IS_PIPE] = args->input_pipe;
+	msg[IS_STRING] = args->input_str;
+	msg[IS_FILE] = args->input_file;
 	origin = IS_PIPE;
 	while (origin <= IS_FILE)
 	{
