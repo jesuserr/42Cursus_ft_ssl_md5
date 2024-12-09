@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 17:12:02 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/09 16:08:13 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/09 19:27:15 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,8 @@ static void	parse_pipe(t_arguments *args)
 // efficient than reading the file multiple times. File size is kept for the
 // hash functions to know how many bytes to read (specially for binary files)
 // and also for the 'munmap' function to know how many bytes to unmap when the
-// program finishes.
+// program finishes. Empty file case is handled too, otherwise 'mmap' would
+// fail.
 void	parse_file_content(t_arguments *args, char *file_name)
 {
 	int			fd;
@@ -81,20 +82,25 @@ void	parse_file_content(t_arguments *args, char *file_name)
 		print_strerror_and_exit(file_name, args);
 	if (fstat(fd, &file_stat) < 0)
 		print_strerror_and_exit(file_name, args);
-	file_content = mmap(NULL, (size_t)file_stat.st_size, PROT_READ, \
-	MAP_PRIVATE, fd, 0);
-	if (file_content == MAP_FAILED)
+	if (file_stat.st_size > 0)
 	{
-		close(fd);
-		print_strerror_and_exit("mmap", args);
+		file_content = mmap(NULL, (size_t)file_stat.st_size, PROT_READ, \
+		MAP_PRIVATE, fd, 0);
+		if (file_content == MAP_FAILED)
+		{
+			close(fd);
+			print_strerror_and_exit("mmap", args);
+		}
+		args->input_file = (char *)file_content;
 	}
+	else
+		args->input_file = "";
 	close(fd);
-	args->input_file = (char *)file_content;
 	args->file_size = (uint64_t)file_stat.st_size;
 	args->file_name = file_name;
 }
 
-// Not final version, needs more testing
+// Parse main function.
 void	parse_arguments(int argc, char **argv, t_arguments *args)
 {
 	int		opt;

@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 17:12:21 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/09 16:19:39 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/09 19:00:56 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ static void	calls_to_hashing_function(t_arguments *args)
 	}
 	if (args->input_pipe)
 		free(args->input_pipe);
-	if (args->input_file)
+	if (args->input_file && args->file_size > 0)
 		if (munmap(args->input_file, args->file_size) < 0)
 			print_strerror_and_exit("munmap", args);
 }
