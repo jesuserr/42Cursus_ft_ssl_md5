@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 11:09:10 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/10 00:28:35 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/10 00:49:38 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ void	read_interactive_mode(t_arguments *args)
 		free(input);
 		input = get_next_line(STDIN_FILENO);
 	}
+	args->pipe_size = ft_strlen(args->input_pipe);
 	free(input);
 }
 
