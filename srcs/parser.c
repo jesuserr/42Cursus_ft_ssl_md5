@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 17:12:02 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/08 21:11:08 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/09 11:09:27 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,13 +52,13 @@ static void	parse_hash_function(t_arguments *args, char *hash)
 
 static void	parse_pipe(t_arguments *args)
 {
-	char		buffer[BUFFER_SIZE];
+	char		buffer[BUFFER_SIZE_PIPE];
 	ssize_t		bytes_read;
 
 	if (isatty(STDIN_FILENO) == 0)
 	{
-		bytes_read = read(STDIN_FILENO, buffer, BUFFER_SIZE - 1);
-		if (bytes_read < 0 || bytes_read >= BUFFER_SIZE - 1)
+		bytes_read = read(STDIN_FILENO, buffer, BUFFER_SIZE_PIPE - 1);
+		if (bytes_read < 0 || bytes_read >= BUFFER_SIZE_PIPE - 1)
 			print_error_and_exit("Error reading from pipe");
 		buffer[bytes_read] = '\0';
 		args->input_pipe = ft_strdup(buffer);
@@ -107,7 +107,7 @@ void	parse_arguments(int argc, char **argv, t_arguments *args)
 	}
 	parse_hash_function(args, argv[optind]);
 	if (!argv[optind + 1] && !args->input_str && !args->input_pipe)
-		print_error_and_exit("Missing arguments");
+		read_interactive_mode(args);
 	if (optind + 1 < argc)
 		parse_file_content(args, argv[optind + 1]);
 	if (optind + 2 < argc)

@@ -6,25 +6,11 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 17:12:21 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/08 18:56:48 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/09 11:16:26 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "incs/ft_ssl.h"
-
-void	print_usage(void)
-{
-	ft_printf("Usage\n"
-		"  ./ft_ssl <command> [flags] [file]\n\n"
-		"Options:\n"
-		"  command     md5, sha224, sha256, sha384 or sha512\n"
-		"  -h          print help and exit\n"
-		"  -p          echo STDIN to STDOUT and append the checksum to STDOUT\n"
-		"  -q          quiet mode\n"
-		"  -r          reverse the format of the output\n"
-		"  -s <string> print the sum of the given string\n");
-	exit(EXIT_SUCCESS);
-}
 
 // Uses an array of function pointers to call the hashing function selected by
 // the user. Performs up to three calls to the hashing function, one for each

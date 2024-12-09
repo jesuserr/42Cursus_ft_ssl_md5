@@ -6,11 +6,25 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 22:21:30 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/08 13:21:09 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/09 11:16:44 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "incs/ft_ssl.h"
+
+void	print_usage(void)
+{
+	ft_printf("Usage\n"
+		"  ./ft_ssl <command> [flags] [file]\n\n"
+		"Options:\n"
+		"  command     md5, sha224, sha256, sha384 or sha512\n"
+		"  -h          print help and exit\n"
+		"  -p          echo STDIN to STDOUT and append the checksum to STDOUT\n"
+		"  -q          quiet mode\n"
+		"  -r          reverse the format of the output\n"
+		"  -s <string> print the sum of the given string\n");
+	exit(EXIT_SUCCESS);
+}
 
 // Prints given array of bytes in hexadecimal format. Depending on the 'start'
 // and 'end' values, it prints the array in ascending or descending order to
@@ -57,19 +71,6 @@ void	print_error_and_exit(char *str)
 	ft_printf("ft_ssl: usage error: %s\n", str);
 	ft_printf("Try 'ft_ssl -h' for more information.\n");
 	exit (EXIT_FAILURE);
-}
-
-// Removes the newline character from the end of the string if it has been 
-// introduced by the 'echo' command when reading from stdin (pipe).
-// Modified only for printing purposes, for hashing purposes the message with
-// the newline character is used.
-void	remove_newline_character(char *str)
-{
-	size_t	len;
-
-	len = ft_strlen(str);
-	if (str[len - 1] == '\n')
-		str[len - 1] = '\0';
 }
 
 // Auxilary function for print_xxx_digest that is common to all hash functions.
