@@ -53,17 +53,3 @@ dkms.conf
 file
 tests
 website
-testers/test/randstr.c
-testers/test/test-md5.sh
-testers/test/test-sha256.sh
-testers/test2/test.sh
-testers/test3/all_bytes
-testers/test3/empty_file
-testers/test3/lorem_ipsum
-testers/test3/null_file
-testers/test3/simple
-testers/test3/simple_null_file
-testers/test3/so_long
-testers/test3/special_chars
-testers/test3/test
-testers/test3/tricky_file
