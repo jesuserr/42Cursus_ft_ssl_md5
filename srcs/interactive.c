@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 11:09:10 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/10 00:49:38 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/16 10:22:13 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,12 +31,25 @@ void	read_interactive_mode(t_arguments *args)
 	free(input);
 }
 
-// Removes the newline character from the end of the message if it has been 
-// introduced by the 'echo' command when reading from stdin (pipe).
-// Modified only for printing purposes, for hashing purposes the message with
-// the newline character is used.
-void	remove_newline_character(char *msg, uint64_t len)
+// Since message coming from stdin can be not null-terminated, write() is used 
+// instead of printf() to print the exact length of the message. Function
+// removes also the newline character from the end of the message if it has been
+// introduced by the 'echo' command when reading from stdin (pipe). Modified 
+// only for printing purposes, for hashing purposes the message with the newline
+// character is processed.
+void	print_message_from_pipe(t_arguments *args)
 {
-	if (len > 0 && msg[len - 1] == '\n')
-		msg[len - 1] = '\0';
+	if (args->pipe_size > 0 && args->message[args->pipe_size - 1] == '\n')
+		args->message[args->pipe_size - 1] = '\0';
+	if (args->quiet_mode)
+	{
+		write (1, args->message, args->pipe_size);
+		ft_printf("\n");
+	}
+	else
+	{
+		ft_printf("(\"");
+		write (1, args->message, args->pipe_size);
+		ft_printf("\")= ");
+	}
 }

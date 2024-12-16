@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 22:21:30 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/09 11:16:44 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/16 10:19:37 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ void	print_prehash_output(char *algorithm, t_arguments *args)
 	if (args->msg_origin == IS_PIPE && !args->echo_stdin)
 		ft_printf("(stdin)= ");
 	else if (args->msg_origin == IS_PIPE && args->echo_stdin)
-		ft_printf("(\"%s\")= ", args->message);
+		print_message_from_pipe(args);
 	else if (args->msg_origin == IS_STRING && !args->reverse_output)
 		ft_printf("%s (\"%s\") = ", algorithm, args->message);
 	else if (args->msg_origin == IS_FILE && !args->reverse_output)

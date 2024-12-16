@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 17:11:34 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/09 23:02:09 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/16 10:22:05 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,6 @@ void		print_prehash_output(char *algorithm, t_arguments *args);
 
 /********************************** interactive.c *****************************/
 void		read_interactive_mode(t_arguments *args);
-void		remove_newline_character(char *msg, uint64_t len);
+void		print_message_from_pipe(t_arguments *args);
 
 #endif

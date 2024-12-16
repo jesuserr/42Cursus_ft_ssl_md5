@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 10:04:39 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/10 00:02:45 by jesuserr         ###   ########.fr       */
+/*   Updated: 2024/12/16 10:21:46 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,14 +112,12 @@ static void	print_sha512_digest(t_sha512_data *ssl_data, t_arguments *args)
 	uint8_t	i;
 
 	i = 0;
-	if (args->msg_origin == IS_PIPE)
-		remove_newline_character(args->message, args->pipe_size);
 	if (args->msg_origin == IS_PIPE && !args->echo_stdin && args->input_file)
 		return ;
 	if (args->quiet_mode)
 	{
 		if (args->echo_stdin && args->msg_origin == IS_PIPE)
-			ft_printf("%s\n", args->message);
+			print_message_from_pipe(args);
 		while (i < SHA512_OUTPUT_SIZE / SHA512_WORD_SIZE)
 			print_hex_bytes((uint8_t *)&(ssl_data->digest[i++]), 7, 0);
 		ft_printf("\n");
