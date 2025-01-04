@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 17:12:02 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/10 00:16:20 by jesuserr         ###   ########.fr       */
+/*   Updated: 2025/01/04 13:54:56 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,6 @@ void	parse_arguments(int argc, char **argv, t_arguments *args)
 {
 	int		opt;
 
-	parse_pipe(args);
 	opt = getopt(argc, argv, "hpqrs:");
 	while (opt != -1)
 	{
@@ -130,10 +129,14 @@ void	parse_arguments(int argc, char **argv, t_arguments *args)
 		opt = getopt(argc, argv, "hpqrs:");
 	}
 	parse_hash_function(args, argv[optind]);
+	parse_pipe(args);
 	if (!argv[optind + 1] && !args->input_str && !args->input_pipe)
 		read_interactive_mode(args);
 	if (optind + 1 < argc)
 		parse_file_content(args, argv[optind + 1]);
 	if (optind + 2 < argc)
-		print_error_and_exit("Too many arguments");
+	{
+		errno = E2BIG;
+		print_strerror_and_exit("hash", args);
+	}
 }
