@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 17:12:02 by jesuserr          #+#    #+#             */
-/*   Updated: 2025/01/04 13:54:56 by jesuserr         ###   ########.fr       */
+/*   Updated: 2026/01/30 11:01:38 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,8 @@ static void	parse_options(int opt, t_arguments *args)
 
 static void	parse_hash_function(t_arguments *args, char *hash)
 {
+	if (!hash)
+		print_error_and_exit("No hash function provided");
 	if (!ft_strncmp(hash, "md5", 3) && ft_strlen(hash) == 3)
 		args->hash_function = 0;
 	else if (!ft_strncmp(hash, "sha224", 6) && ft_strlen(hash) == 6)
