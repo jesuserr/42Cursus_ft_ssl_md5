@@ -6,7 +6,7 @@
 /*   By: jesuserr <jesuserr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 11:09:10 by jesuserr          #+#    #+#             */
-/*   Updated: 2024/12/16 10:22:13 by jesuserr         ###   ########.fr       */
+/*   Updated: 2026/02/25 20:09:29 by jesuserr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,19 +37,24 @@ void	read_interactive_mode(t_arguments *args)
 // introduced by the 'echo' command when reading from stdin (pipe). Modified 
 // only for printing purposes, for hashing purposes the message with the newline
 // character is processed.
+// In order to apply compiler flag '-O3' it is required to assign the return
+// value of write() to a variable, even if it is not used, as in this case.
 void	print_message_from_pipe(t_arguments *args)
 {
+	ssize_t	bytes;
+
+	(void)bytes;
 	if (args->pipe_size > 0 && args->message[args->pipe_size - 1] == '\n')
 		args->message[args->pipe_size - 1] = '\0';
 	if (args->quiet_mode)
 	{
-		write (1, args->message, args->pipe_size);
+		bytes = write (STDOUT_FILENO, args->message, args->pipe_size);
 		ft_printf("\n");
 	}
 	else
 	{
 		ft_printf("(\"");
-		write (1, args->message, args->pipe_size);
+		bytes = write (STDOUT_FILENO, args->message, args->pipe_size);
 		ft_printf("\")= ");
 	}
 }

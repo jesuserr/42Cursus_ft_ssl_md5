@@ -74,6 +74,12 @@ MD5 ("hello") = 5d41402abc4b2a76b9719d911017c592
 
 ## 🚀 Installation & Usage
 
+### Clone the Repository
+```bash
+git clone https://github.com/jesuserr/42Cursus_ft_ssl_md5.git
+cd 42Cursus_ft_ssl_md5
+```
+
 ### Compilation
 ```bash
 make                   # Compile the project
